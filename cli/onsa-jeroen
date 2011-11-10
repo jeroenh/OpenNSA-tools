@@ -38,10 +38,16 @@ def doInfo(info_id):
         print 80*"-"
         
 
-def getNSA(network):
+def getNSA(name):
     topo = opennsa.topology.parseGOLERDFTopology(TOPOLOGY_FILE)
-    srcNet = topo.getNetwork(network)
-    return srcNet.nsa
+    for net in topo:
+        if net.name == name:
+            return net.nsa
+        elif net.nsa.identity == name:
+            return net.nsa 
+        else:
+            pass
+    raise Exception("Could not find %s in the topology." % name)
     
 @defer.inlineCallbacks
 def doTerminate(terminateArgs):
