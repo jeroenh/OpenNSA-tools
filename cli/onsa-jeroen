@@ -119,7 +119,16 @@ def doReserve(options):
     client,client_nsa = createClient()
     # Send the reservation and wait for response
     r = yield client.reserve(client_nsa, provider_nsa, None, global_reservation_id, description, connection_id, service_params)
-    print "Reservation created. Reservation ID:", global_reservation_id
+    print "Reservation created.\nReservation ID: %s\nConnection ID: %s" (global_reservation_id,connection_id)
+
+@defer.inlineCallbacks
+def doTerminate(options):
+    nsa = options.terminate
+    if not "http" in nsa:
+        nsa = getNSA(nsa)
+    client,client_nsa = createClient()
+    print "Terminating %s at %s" % (options.cid, nsa)
+    qr = yield client.terminate(client_nsa, nsa, None, "Summary", connection_ids = [ queryArgs.cid ] )
     
 def createClient():
     # Constructing the client NSA
@@ -158,26 +167,29 @@ def doMain():
                         help="provide a global reservation ID for querying or reservation")
     parser.add_option("-c","--connection-id",
                         action="store",dest="cid",default=None,
-                        help="provide a connection ID for querying")
+                        help="provide a connection ID for querying or termination")
     parser.add_option("-t","--terminate",
                         action="store",dest="terminate",nargs=2,
                         help="terminate a reservation at a network, requires network and conn-id")
     (options, args) = parser.parse_args()
 
     cmd = None
+    if options.gid and options.cid:
+        sys.exit("Cannot use both reservation ID and connection ID")
+
     if options.info:
         doInfo(options.info)
     elif options.reserve:
         cmd = doReserve
         opts = options
     elif options.query:
-        if options.gid and options.cid:
-            sys.exit("Cannot use both reservation ID and connection ID")
         cmd = doQuery
         opts = options
     elif options.terminate:
+        if not options.cid:
+            sys.exit("Need a connection ID to terminate connections.")
         cmd = doTerminate
-        opts = options.terminate
+        opts = options
     if cmd:
         d = defer.maybeDeferred(cmd,opts)
         runDefer(d)
