@@ -8,6 +8,7 @@ import os.path
 import socket
 import datetime
 import time
+import sys
 
 import opennsa.topology
 import opennsa.setup
@@ -60,7 +61,7 @@ def doQuery(queryArgs):
     if queryArgs.cid:
         print "Querying %s for %s" % (nsa,queryArgs.cid)
         qr = yield client.query(client_nsa, nsa, None, "Summary", connection_ids = [ queryArgs.cid ] )
-    if queryArgs.gid:
+    elif queryArgs.gid:
         print "Querying %s for %s" % (nsa,queryArgs.gid)
         qr = yield client.query(client_nsa, nsa, None, "Summary", global_reservation_ids = [ queryArgs.gid ] )
     else:
@@ -84,11 +85,12 @@ def doQuery(queryArgs):
         
 
 @defer.inlineCallbacks
-def doReserve(reservation):
+def doReserve(options):
     topo = opennsa.topology.parseGOLERDFTopology(TOPOLOGY_FILE)
+    reservation = options.reserve
     srcNet = topo.getNetwork(reservation[0])
-    dstNet = topo.getNetwork(reservation[2])
     srcSTP = srcNet.getEndpoint(reservation[1])
+    dstNet = topo.getNetwork(reservation[2])
     dstSTP = dstNet.getEndpoint(reservation[3])
     provider_nsa = srcNet.nsa
     print "Reserving (%s,%s) to (%s,%s) \n at %s (%s)" % (srcNet,srcSTP,dstNet,dstSTP, provider_nsa,provider_nsa.url())
@@ -101,8 +103,11 @@ def doReserve(reservation):
         start_time = datetime.datetime.utcfromtimestamp(time.time() + 120 ) # two minutes from now
     if not end_time:
         end_time   = start_time + datetime.timedelta(minutes=2) # two minutes later
+    if options.gid:
+        global_reservation_id = options.gid
+    else:
+        global_reservation_id = 'opennsa-cli:gid-%s' % random.randrange(1000,10000)
     connection_id = "urn:uuid:%s" % uuid.uuid1()
-    global_reservation_id = 'gid-%s' % random.randrange(1000,10000)
     bwp = opennsa.nsa.BandwidthParameters(1000)
     service_params  = opennsa.nsa.ServiceParameters(start_time, end_time, srcSTP, dstSTP, bandwidth=bwp)
     client,client_nsa = createClient()
@@ -147,7 +152,7 @@ def doMain():
                         help="provide a global reservation ID for querying or reservation")
     parser.add_option("-c","--connection-id",
                         action="store",dest="cid",default=None,
-                        help="provide a connection ID for querying or reservation")
+                        help="provide a connection ID for querying")
     parser.add_option("-t","--terminate",
                         action="store",dest="terminate",nargs=2,
                         help="terminate a reservation at a network, requires network and conn-id")
@@ -158,8 +163,10 @@ def doMain():
         doInfo(options.info)
     elif options.reserve:
         cmd = doReserve
-        opts = options.reserve
+        opts = options
     elif options.query:
+        if options.gid and options.cid:
+            sys.exit("Cannot use both reservation ID and connection ID")
         cmd = doQuery
         opts = options
     elif options.terminate:
