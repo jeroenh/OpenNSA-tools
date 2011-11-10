@@ -14,7 +14,7 @@ import opennsa.setup
 import opennsa.nsa
 import opennsa.cli.commands
 
-TOPOLOGY_FILE = "SC2011-Topo-v5a.owl"
+TOPOLOGY_FILE = "SC2011-Topo-v5e.owl"
 WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
 PORT = 9080
 
@@ -53,26 +53,35 @@ def doTerminate(terminateArgs):
 
 @defer.inlineCallbacks
 def doQuery(queryArgs):
-    nsa = queryArgs[0]
+    nsa = queryArgs.query
     if not "http" in nsa:
         nsa = getNSA(nsa)
-    query = queryArgs[1]
-    if query == "None":
-        query = None
-    print "Querying %s for %s" % (nsa,query)
     client,client_nsa = createClient()
-    qr = yield client.query(client_nsa, nsa, None, "Summary", connection_ids = [ query ] )
-    for res in qr.reservationSummary:
-        print "global-reservation-id: " + str(res.globalReservationId)
-        print "description: " + str(res.description)
-        print "schedule: %s -- %s" % (res.serviceParameters.schedule.startTime, res.serviceParameters.schedule.endTime)
-        print "bandwidth: " + str(res.serviceParameters.bandwidth.desired)
-        print "status: " + str(res.connectionState)
-        if hasattr(res,"path"):
-            if hasattr(res.path,"stpList"):
-                print "stplist: %s" % (res.path.stpList.stp)
-            else:
-                print "stpList: " + str([res.path.sourceSTP.stpId,res.path.destSTP.stpId]) 
+    if queryArgs.cid:
+        print "Querying %s for %s" % (nsa,queryArgs.cid)
+        qr = yield client.query(client_nsa, nsa, None, "Summary", connection_ids = [ queryArgs.cid ] )
+    if queryArgs.gid:
+        print "Querying %s for %s" % (nsa,queryArgs.gid)
+        qr = yield client.query(client_nsa, nsa, None, "Summary", global_reservation_ids = [ queryArgs.gid ] )
+    else:
+        print "Querying %s for %s" % (nsa,None)
+        qr = yield client.query(client_nsa, nsa, None, "Summary", connection_ids = [] )
+    if hasattr(qr,"reservationSummary"):
+        for res in qr.reservationSummary:
+            print "global-reservation-id: " + str(res.globalReservationId)
+            print "description: " + str(res.description)
+            print "schedule: %s -- %s" % (res.serviceParameters.schedule.startTime, res.serviceParameters.schedule.endTime)
+            print "bandwidth: " + str(res.serviceParameters.bandwidth.desired)
+            print "status: " + str(res.connectionState)
+            if hasattr(res,"path"):
+                if hasattr(res.path,"stpList"):
+                    print "stplist: %s" % (res.path.stpList.stp)
+                else:
+                    print "stpList: " + str([res.path.sourceSTP.stpId,res.path.destSTP.stpId]) 
+            print "Typeinfo: %s" % (type(res.serviceParameters.schedule.startTime))
+    else:
+        print qr
+        
 
 @defer.inlineCallbacks
 def doReserve(reservation):
@@ -82,7 +91,7 @@ def doReserve(reservation):
     srcSTP = srcNet.getEndpoint(reservation[1])
     dstSTP = dstNet.getEndpoint(reservation[3])
     provider_nsa = srcNet.nsa
-    print "Reserving (%s,%s) to (%s,%s) at %s" % (srcNet,srcSTP,dstNet,dstSTP,provider_nsa)
+    print "Reserving (%s,%s) to (%s,%s) \n at %s (%s)" % (srcNet,srcSTP,dstNet,dstSTP, provider_nsa,provider_nsa.url())
     # Setting some defaults for now, to fill in later
     start_time=None
     end_time=None
@@ -99,7 +108,7 @@ def doReserve(reservation):
     client,client_nsa = createClient()
     # Send the reservation and wait for response
     r = yield client.reserve(client_nsa, provider_nsa, None, global_reservation_id, description, connection_id, service_params)
-    print "Reservation created. Connection ID:", connection_id
+    print "Reservation created. Reservation ID:", global_reservation_id
     
 def createClient():
     # Constructing the client NSA
@@ -107,13 +116,16 @@ def createClient():
     s.connect(("gmail.com",80))
     host = s.getsockname()[0]
     s.close()
-    client, service, factory = opennsa.setup.createClient(host, PORT, WSDL_DIR)
+    client, service, factory = opennsa.setup.createClient(host, PORT, WSDL_DIR,timeout=60)
     client_nsa = opennsa.nsa.NetworkServiceAgent('OpenNSA-commandline', 'http://%s:%s/NSI/services/ConnectionService' % (host,PORT))
     reactor.listenTCP(PORT, factory)
     return client,client_nsa
 
 def runDefer(d):
-    d.addErrback(lambda x : x.printTraceback())
+    def handleError(x):
+        x.printTraceback()
+        reactor.stop()
+    d.addErrback(handleError)
     d.addBoth(lambda _ : reactor.stop())
     reactor.run()
 
@@ -128,8 +140,14 @@ def doMain():
                         action="store",dest="reserve",nargs=4,
                         help="make a reservation between two stps both defined by network and id")
     parser.add_option("-q","--query",
-                        action="store",dest="query",nargs=2,
+                        action="store",dest="query",
                         help="query a network about a reservation, requires network and query")
+    parser.add_option("-g","--global-reservation-id",
+                        action="store",dest="gid",default=None,
+                        help="provide a global reservation ID for querying or reservation")
+    parser.add_option("-c","--connection-id",
+                        action="store",dest="cid",default=None,
+                        help="provide a connection ID for querying or reservation")
     parser.add_option("-t","--terminate",
                         action="store",dest="terminate",nargs=2,
                         help="terminate a reservation at a network, requires network and conn-id")
@@ -143,7 +161,7 @@ def doMain():
         opts = options.reserve
     elif options.query:
         cmd = doQuery
-        opts = options.query
+        opts = options
     elif options.terminate:
         cmd = doTerminate
         opts = options.terminate
