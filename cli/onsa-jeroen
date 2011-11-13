@@ -124,7 +124,7 @@ def doReserve(options):
     print "Reservation created.\nReservation ID: %s\nConnection ID: %s" % (global_reservation_id,connection_id)
     if r:
         urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/register",
-            urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn}))
+            urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
         
 
 @defer.inlineCallbacks
@@ -134,7 +134,7 @@ def doTerminate(options):
         nsa = getNSA(nsa)
     client,client_nsa = createClient()
     print "Terminating %s at %s" % (options.cid, nsa)
-    qr = yield client.terminate(client_nsa, nsa, None, "Summary", connection_ids = [ queryArgs.cid ] )
+    qr = yield client.terminate(client_nsa, nsa, None , connection_id =  options.cid )
     
 def createClient():
     # Constructing the client NSA
@@ -175,7 +175,7 @@ def doMain():
                         action="store",dest="cid",default=None,
                         help="provide a connection ID for querying or termination")
     parser.add_option("-t","--terminate",
-                        action="store",dest="terminate",nargs=2,
+                        action="store",dest="terminate",
                         help="terminate a reservation at a network, requires network and conn-id")
     (options, args) = parser.parse_args()
 
