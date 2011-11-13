@@ -124,7 +124,7 @@ def doReserve(options):
     print "Reservation created.\nReservation ID: %s\nConnection ID: %s" % (global_reservation_id,connection_id)
     if r:
         urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/register",
-            urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn)))
+            urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn}))
         
 
 @defer.inlineCallbacks
