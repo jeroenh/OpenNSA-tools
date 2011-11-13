@@ -9,6 +9,8 @@ import socket
 import datetime
 import time
 import sys
+import urllib
+
 
 import opennsa.topology
 import opennsa.setup
@@ -119,7 +121,11 @@ def doReserve(options):
     client,client_nsa = createClient()
     # Send the reservation and wait for response
     r = yield client.reserve(client_nsa, provider_nsa, None, global_reservation_id, description, connection_id, service_params)
-    print "Reservation created.\nReservation ID: %s\nConnection ID: %s" (global_reservation_id,connection_id)
+    print "Reservation created.\nReservation ID: %s\nConnection ID: %s" % (global_reservation_id,connection_id)
+    if r:
+        urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/register",
+            urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn)))
+        
 
 @defer.inlineCallbacks
 def doTerminate(options):
@@ -146,7 +152,7 @@ def runDefer(d):
         x.printTraceback()
         reactor.stop()
     d.addErrback(handleError)
-    d.addBoth(lambda _ : reactor.stop())
+    d.addCallback(lambda _ : reactor.stop())
     reactor.run()
 
 def doMain():
