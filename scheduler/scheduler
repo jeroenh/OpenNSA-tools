@@ -47,9 +47,8 @@ class Scheduler(object):
     def runSchedule(self):
         if self.index > len(self.schedule):
             self.index = 0
+        # reserve adds callLater for Provision, which callLaters Terminate
         reactor.callLater(0,self.doReserve,self.schedule[self.index])
-        reactor.callLater(90,self.doProvision)
-        reactor.callLater(280,self.doTerminate)
         self.index += 1
         self._counter += 1
         
@@ -69,9 +68,9 @@ class Scheduler(object):
         description='Scheduled Connection'
         # Constructing the ServiceParamaters
         if not start_time:
-            start_time = datetime.datetime.utcfromtimestamp(time.time() + 90 ) # two minutes from now
+            start_time = datetime.datetime.utcfromtimestamp(time.time() + 60 ) # one minutes from now
         if not end_time:
-            end_time   = start_time + datetime.timedelta(minutes=3) # two minutes later
+            end_time   = start_time + datetime.timedelta(minutes=3)
         global_reservation_id = 'uva-scheduler:gid-%s' % self.counter
         self._counter += 1
         connection_id = "urn:uuid:%s" % uuid.uuid1()
@@ -84,23 +83,24 @@ class Scheduler(object):
             print "Reservation created.\nReservation ID: %s\nConnection ID: %s" % (global_reservation_id,connection_id)
             urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/register",
                 urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
-            self.connection_id = connection_id
-            self.provider_nsa = provider_nsa
+            reactor.callLater(60,self.doProvision,provider_nsa,connection_id)
+        else:
+            print "Reservation failed."
 
     @defer.inlineCallbacks
-    def doProvision(self):
-        if self.connection_id:
-            print "Provisioning %s at %s" % (self.connection_id, self.provider_nsa)
-            qr = yield self.client.provision(self.client_nsa, self.provider_nsa, None , connection_id =  self.connection_id )
+    def doProvision(self,provider_nsa,connection_id):
+        if connection_id:
+            print "Provisioning %s at %s" % (connection_id, provider_nsa)
+            qr = yield self.client.provision(self.client_nsa, self.provider_nsa, None , connection_id =  connection_id )
+            reactor.callLater(100,self.doTerminate,provider_nsa,connection_id)
         else:
             print "Reservation failed, skipping provision."
             
     @defer.inlineCallbacks
     def doTerminate(self):
-        if self.connection_id:
-            print "Terminating %s at %s" % (self.connection_id, self.provider_nsa)
-            qr = yield self.client.terminate(self.client_nsa, self.provider_nsa, None , connection_id =  self.connection_id )
-            self.connection_id = None
+        if connection_id:
+            print "Terminating %s at %s" % (connection_id, provider_nsa)
+            qr = yield self.client.terminate(self.client_nsa, self.provider_nsa, None , connection_id =  connection_id )
         else:
             print "Reservation failed, skipping termination."
 
