@@ -96,11 +96,20 @@ def doQuery(queryArgs):
 def doReserve(options):
     topo = opennsa.topology.parseGOLERDFTopology(TOPOLOGY_FILE)
     reservation = options.reserve
-    srcNet = topo.getNetwork(reservation[0])
+    srcNet = reservation[0]
+    dstNet = reservation[2]
+    if not srcNet.endswith(".ets"):
+        srcNet += ".ets"
+    if not dstNet.endswith(".ets"):
+        dstNet += ".ets"
+    srcNet = topo.getNetwork(srcNet)
     srcSTP = srcNet.getEndpoint(reservation[1])
-    dstNet = topo.getNetwork(reservation[2])
+    dstNet = topo.getNetwork(dstNet)
     dstSTP = dstNet.getEndpoint(reservation[3])
-    provider_nsa = srcNet.nsa
+    if options.nsa:
+        provider_nsa = getNSA(options.nsa)
+    else:
+        provider_nsa = srcNet.nsa
     print "Reserving (%s,%s) to (%s,%s) \n at %s (%s)" % (srcNet,srcSTP,dstNet,dstSTP, provider_nsa,provider_nsa.url())
     # Setting some defaults for now, to fill in later
     start_time=None
@@ -110,13 +119,13 @@ def doReserve(options):
     if not start_time:
         start_time = datetime.datetime.utcfromtimestamp(time.time() + 120 ) # two minutes from now
     if not end_time:
-        end_time   = start_time + datetime.timedelta(minutes=2) # two minutes later
+        end_time   = start_time + datetime.timedelta(minutes=3) # two minutes later
     if options.gid:
         global_reservation_id = options.gid
     else:
         global_reservation_id = 'opennsa-cli:gid-%s' % random.randrange(1000,10000)
     connection_id = "urn:uuid:%s" % uuid.uuid1()
-    bwp = opennsa.nsa.BandwidthParameters(1000)
+    bwp = opennsa.nsa.BandwidthParameters(200)
     service_params  = opennsa.nsa.ServiceParameters(start_time, end_time, srcSTP, dstSTP, bandwidth=bwp)
     client,client_nsa = createClient()
     # Send the reservation and wait for response
@@ -150,9 +159,8 @@ def createClient():
 def runDefer(d):
     def handleError(x):
         x.printTraceback()
-        reactor.stop()
     d.addErrback(handleError)
-    d.addCallback(lambda _ : reactor.stop())
+    d.addCallback(lambda _: reactor.stop())
     reactor.run()
 
 def doMain():
@@ -174,6 +182,9 @@ def doMain():
     parser.add_option("-c","--connection-id",
                         action="store",dest="cid",default=None,
                         help="provide a connection ID for querying or termination")
+    parser.add_option("-n","--provider-nsa",
+                        action="store",dest="nsa",default=None,
+                        help="provide a provider NSA to issue commands to")
     parser.add_option("-t","--terminate",
                         action="store",dest="terminate",
                         help="terminate a reservation at a network, requires network and conn-id")
