@@ -10,7 +10,7 @@ import datetime
 import time
 import sys
 import urllib
-
+import random
 
 import opennsa.topology
 import opennsa.setup
@@ -41,16 +41,20 @@ class Scheduler(object):
         self.connection_id = None
         self.provider_nsa = None
         self.schedule = [
-                        (("aist.ets","ps-83"),("starlight.ets","ps-83"),"aist.ets"),
-                (("pionier.ets","ps-83"), ("kddi-labs.ets","ps-83"),"northernlight.ets"),
-                    (("starlight.ets","ps-83"),("northernlight.ets","ps-83"),"starlight.ets")
+                    # (("aist.ets","ps-83"),("starlight.ets","ps-83"),"aist.ets"),
+                    # (("pionier.ets","ps-83"), ("kddi-labs.ets","ps-83"),"northernlight.ets"),
+                    (("starlight.ets","ps-83"),("northernlight.ets","ps-83"),"starlight.ets"),
+                    # (("uvalight.ets","ps-83"),("krlight.ets","ps-83"),"krlight.ets"),
+                    # (("uvalight.ets","ps-83"),("kddi-labs.ets","ps-83"),"aist.ets"),
+                    (("uvalight.ets","ps-83"),("northernlight.ets","ps-83"),"northernlight.ets"),
+                    # (("aist.ets","ps-83"),("czechlight.ets","ps-83"),"aist.ets"),
+                    (("starlight.ets","ps-83"),("czechlight.ets","ps-83"),"starlight.ets"),
                    ]
+
     def runSchedule(self):
-        if self.index > len(self.schedule):
-            self.index = 0
+        res = random.choice(self.schedule)
         # reserve adds callLater for Provision, which callLaters Terminate
-        reactor.callLater(0,self.doReserve,self.schedule[self.index])
-        self.index += 1
+        reactor.callLater(0,self.doReserve,res)
         self._counter += 1
         
 
