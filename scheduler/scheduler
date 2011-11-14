@@ -40,8 +40,9 @@ class Scheduler(object):
         self.index = 0
         self.connection_id = None
         self.provider_nsa = None
-        self.schedule = [(("pionier.ets","ps-83"), ("kddi-labs.ets","ps-83"),"northernlight.ets"),
+        self.schedule = [
                         (("aist.ets","ps-83"),("starlight.ets","ps-83"),"aist.ets"),
+                (("pionier.ets","ps-83"), ("kddi-labs.ets","ps-83"),"northernlight.ets"),
                     (("starlight.ets","ps-83"),("northernlight.ets","ps-83"),"starlight.ets")
                    ]
     def runSchedule(self):
@@ -97,7 +98,7 @@ class Scheduler(object):
             print "Reservation failed, skipping provision."
             
     @defer.inlineCallbacks
-    def doTerminate(self):
+    def doTerminate(self, provider_nsa, connection_id):
         if connection_id:
             print "Terminating %s at %s" % (connection_id, provider_nsa)
             qr = yield self.client.terminate(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
