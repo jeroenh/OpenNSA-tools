@@ -91,7 +91,7 @@ class Scheduler(object):
     def doProvision(self,provider_nsa,connection_id):
         if connection_id:
             print "Provisioning %s at %s" % (connection_id, provider_nsa)
-            qr = yield self.client.provision(self.client_nsa, self.provider_nsa, None , connection_id =  connection_id )
+            qr = yield self.client.provision(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
             reactor.callLater(100,self.doTerminate,provider_nsa,connection_id)
         else:
             print "Reservation failed, skipping provision."
@@ -100,7 +100,7 @@ class Scheduler(object):
     def doTerminate(self):
         if connection_id:
             print "Terminating %s at %s" % (connection_id, provider_nsa)
-            qr = yield self.client.terminate(self.client_nsa, self.provider_nsa, None , connection_id =  connection_id )
+            qr = yield self.client.terminate(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
         else:
             print "Reservation failed, skipping termination."
 

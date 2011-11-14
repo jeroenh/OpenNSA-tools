@@ -1,3 +1,0 @@
-1) AIST:PS-80 > StarLight:PS-80
-2) Pioneer:ps-80  >  KDDI-Labs:ps-80
-3) StarLight:ps-80  >  NorthernLight:ps-80
