@@ -19,7 +19,7 @@ import opennsa.cli.commands
 
 TOPOLOGY_FILE = "SC2011-Topo-v5e.owl"
 WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
-PORT = 9080
+PORT = 9081
 
 
 def doInfo(info_id):
