@@ -41,15 +41,15 @@ class Scheduler(object):
         self.connection_id = None
         self.provider_nsa = None
         self.schedule = [
-                     (("aist.ets","ps-83"),("starlight.ets","ps-83"),"aist.ets"),
-                     (("pionier.ets","ps-83"), ("kddi-labs.ets","ps-83"),"northernlight.ets"),
-                    (("starlight.ets","ps-83"),("uvalight.ets","ps-83"),"aist.ets"),
-                    (("uvalight.ets","ps-83"),("krlight.ets","ps-83"),"aist.ets"),
-                     (("uvalight.ets","ps-83"),("kddi-labs.ets","ps-83"),"aist.ets"),
+                     (("kddi-labs.ets","ps-83"),("starlight.ets","ps-83"),"starlight.ets"),
+                     (("geant.ets","ps-83"), ("kddi-labs.ets","ps-83"),"northernlight.ets"),
+                    (("starlight.ets","ps-83"),("uvalight.ets","ps-83"),"starlight.ets"),
+                    (("uvalight.ets","ps-83"),("krlight.ets","ps-83"),"starlight.ets"),
+                     (("uvalight.ets","ps-83"),("kddi-labs.ets","ps-83"),"starlight.ets"),
                     (("uvalight.ets","ps-83"),("northernlight.ets","ps-83"),"northernlight.ets"),
-                     (("aist.ets","ps-83"),("northernlight.ets","ps-83"),"aist.ets"),
-                #    (("uvalight.ets","ps-83"),("czechlight.ets","ps-83"),"aist.ets"),
-                    (("starlight.ets","ps-83"),("pionier.ets","ps-83"),"aist.ets"),
+                     (("kddi-labs.ets","ps-83"),("northernlight.ets","ps-83"),"starlight.ets"),
+                   (("uvalight.ets","ps-83"),("czechlight.ets","ps-83"),"northernlight.ets"),
+                    (("starlight.ets","ps-83"),("geant.ets","ps-83"),"starlight.ets"),
                    ]
 
     def runSchedule(self):
