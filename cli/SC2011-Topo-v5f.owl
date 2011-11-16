@@ -41,6 +41,8 @@
         - in PPT diagram: changed Krlight to KRLight (label change only)
     v5e
         - corrected "managedBy" nsa name for uvalight.ets from uva to "uvalight"
+    v5f   Nov 15, 2011
+        - Updated GEANT csProviderEndpoint
         
 -->
 <rdf:RDF xmlns="http://www.glif.is/working-groups/tech/dtox#"
@@ -583,7 +585,7 @@
         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#NSA"/>
         <managing rdf:resource="urn:ogf:network:nsnetwork:geant.ets" />
         <adminContact rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.	AutoBAHN  (GEANT) 1.1.	Implementation Name: AutoBAHN  1.2.	Project manager for the development effort:  name: Radek Krzywania  email: radek.krzywania@man.poznan.pl  skype: Radoslaw.krzywania 1.3.	Key software engineer:  name: Michal Balcerkiewicz  email: michalb@man.poznan.pl  skype= michalb.psnc</adminContact>
-        <csProviderEndpoint rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://autobahn.par.fr.geant2.net:8090/nsi/ConnectionProviderPort</csProviderEndpoint>
+        <csProviderEndpoint rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://194.132.53.174:9082/nsi/ConnectionProviderPort</csProviderEndpoint>
         <rdfs:comment xml:lang="en">Position : [2800,100]</rdfs:comment>
     </owl:NamedIndividual>
 

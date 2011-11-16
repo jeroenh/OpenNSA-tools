@@ -17,7 +17,7 @@ import opennsa.setup
 import opennsa.nsa
 import opennsa.cli.commands
 
-TOPOLOGY_FILE = "SC2011-Topo-v5e.owl"
+TOPOLOGY_FILE = "SC2011-Topo-v5f.owl"
 WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
 PORT = 9081
 
@@ -78,7 +78,8 @@ def doQuery(queryArgs):
     if hasattr(qr,"reservationSummary"):
         for res in qr.reservationSummary:
             print "global-reservation-id: " + str(res.globalReservationId)
-            print "description: " + str(res.description)
+            if hasattr(res,"description"):
+                print "description: " + str(res.description)
             print "schedule: %s -- %s" % (res.serviceParameters.schedule.startTime, res.serviceParameters.schedule.endTime)
             print "bandwidth: " + str(res.serviceParameters.bandwidth.desired)
             print "status: " + str(res.connectionState)
@@ -118,7 +119,9 @@ def doReserve(options):
     # Constructing the ServiceParamaters
     if not start_time:
         start_time = datetime.datetime.utcfromtimestamp(time.time() + 120 ) # two minutes from now
-    if not end_time:
+    if options.length:
+        end_time   = start_time + datetime.timedelta(minutes=options.length) # two minutes later
+    else:
         end_time   = start_time + datetime.timedelta(minutes=3) # two minutes later
     if options.gid:
         global_reservation_id = options.gid
@@ -145,6 +148,15 @@ def doTerminate(options):
     print "Terminating %s at %s" % (options.cid, nsa)
     qr = yield client.terminate(client_nsa, nsa, None , connection_id =  options.cid )
     
+@defer.inlineCallbacks
+def doProvision(options):
+    nsa = options.provision
+    if not "http" in nsa:
+        nsa = getNSA(nsa)
+    client,client_nsa = createClient()
+    print "Provisioning %s at %s" % (options.cid, nsa)
+    qr = yield client.provision(client_nsa, nsa, None , connection_id =  options.cid )
+
 def createClient():
     # Constructing the client NSA
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -179,6 +191,9 @@ def doMain():
     parser.add_option("-g","--global-reservation-id",
                         action="store",dest="gid",default=None,
                         help="provide a global reservation ID for querying or reservation")
+    parser.add_option("-l","--length",
+                        action="store",dest="length",default=None,type="int",
+                        help="Length of reservation in minutes")
     parser.add_option("-c","--connection-id",
                         action="store",dest="cid",default=None,
                         help="provide a connection ID for querying or termination")
@@ -188,6 +203,9 @@ def doMain():
     parser.add_option("-t","--terminate",
                         action="store",dest="terminate",
                         help="terminate a reservation at a network, requires network and conn-id")
+    parser.add_option("-p","--provision",
+                        action="store",dest="provision",
+                        help="provision a reservation at a network, requires network and conn-id")
     (options, args) = parser.parse_args()
 
     cmd = None
@@ -201,6 +219,9 @@ def doMain():
         opts = options
     elif options.query:
         cmd = doQuery
+        opts = options
+    elif options.provision:
+        cmd = doProvision
         opts = options
     elif options.terminate:
         if not options.cid:
