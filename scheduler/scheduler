@@ -17,12 +17,12 @@ import opennsa.setup
 import opennsa.nsa
 import opennsa.cli.commands
 
-TOPOLOGY_FILE = "../cli/SC2011-Topo-v5f.owl"
+TOPOLOGY_FILE = [open(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../topologies/AutoGOLE-Topo.owl"))]
 WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
 PORT = 6080
 
 def getNSA(name):
-    topo = opennsa.topology.parseGOLERDFTopology(TOPOLOGY_FILE)
+    topo = opennsa.topology.parseTopology(TOPOLOGY_FILE)
     for net in topo:
         if net.name == name:
             return net.nsa
@@ -42,13 +42,13 @@ class Scheduler(object):
         self.provider_nsa = None
         self.schedule = [
                      (("aist.ets","ps-83"),("starlight.ets","ps-83"),"starlight.ets"),
-                     (("geant.ets","ps-83"), ("kddi-labs.ets","ps-83"),"northernlight.ets"),
+                     (("geant.ets","ps-83"), ("kddi-labs.ets","ps-83"),"aist.ets"),
                     (("starlight.ets","ps-83"),("uvalight.ets","ps-83"),"starlight.ets"),
                     (("uvalight.ets","ps-83"),("krlight.ets","ps-83"),"starlight.ets"),
                      (("uvalight.ets","ps-83"),("kddi-labs.ets","ps-83"),"starlight.ets"),
-                    (("uvalight.ets","ps-83"),("northernlight.ets","ps-83"),"northernlight.ets"),
+                    (("uvalight.ets","ps-83"),("northernlight.ets","ps-83"),"aist.ets"),
                      (("aist.ets","ps-83"),("northernlight.ets","ps-83"),"aist.ets"),
-                   (("uvalight.ets","ps-83"),("czechlight.ets","ps-83"),"northernlight.ets"),
+                   (("uvalight.ets","ps-83"),("czechlight.ets","ps-83"),"aist.ets"),
                     (("starlight.ets","ps-83"),("geant.ets","ps-83"),"starlight.ets"),
                    ]
 
@@ -60,7 +60,7 @@ class Scheduler(object):
 
     @defer.inlineCallbacks
     def doReserve(self,reservation):
-        topo = opennsa.topology.parseGOLERDFTopology(TOPOLOGY_FILE)
+        topo = opennsa.topology.parseTopology(TOPOLOGY_FILE)
         # reservation = options.reserve
         srcNet = topo.getNetwork(reservation[0][0])
         srcSTP = srcNet.getEndpoint(reservation[0][1])
@@ -88,7 +88,9 @@ class Scheduler(object):
             print "Reservation created.\nReservation ID: %s\nConnection ID: %s" % (global_reservation_id,connection_id)
             urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/register",
                 urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
-            reactor.callLater(60,self.doProvision,provider_nsa,connection_id)
+            reactor.callLater(60, self.doProvision, provider_nsa, connection_id)
+            unregister_time = (end_time - datetime.datetime.utcnow()).total_seconds()
+            reactor.callLater(purge_time, self.unregister, global_reservation_id, provider_nsa.urn())
         else:
             print "Reservation failed."
 
@@ -97,7 +99,7 @@ class Scheduler(object):
         if connection_id:
             print "Provisioning %s at %s" % (connection_id, provider_nsa)
             qr = yield self.client.provision(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
-            reactor.callLater(100,self.doTerminate,provider_nsa,connection_id)
+            reactor.callLater(100, self.doTerminate, provider_nsa, connection_id)
         else:
             print "Reservation failed, skipping provision."
             
@@ -109,13 +111,19 @@ class Scheduler(object):
         else:
             print "Reservation failed, skipping termination."
 
+    @defer.inlineCallbacks
+    def doUnregister(self, global_reservation_id, nsa):
+        print "Unregistering reservation ID: %s" % (global_reservation_id)
+        urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/unregister",
+            urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
+        
     def createClient(self):
         # Constructing the client NSA
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("gmail.com",80))
         host = s.getsockname()[0]
         s.close()
-        self.client, service, factory = opennsa.setup.createClient(host, PORT, WSDL_DIR,timeout=90)
+        self.client, factory = opennsa.setup.createClient(host, PORT, WSDL_DIR)
         self.client_nsa = opennsa.nsa.NetworkServiceAgent('AutoScheduler', 'http://%s:%s/NSI/services/ConnectionService' % (host,PORT))
         reactor.listenTCP(PORT, factory)
         # return client,client_nsa
