@@ -90,7 +90,7 @@ class Scheduler(object):
                 urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
             reactor.callLater(60, self.doProvision, provider_nsa, connection_id)
             unregister_time = (end_time - datetime.datetime.utcnow()).total_seconds()
-            reactor.callLater(purge_time, self.unregister, global_reservation_id, provider_nsa.urn())
+            reactor.callLater(unregister_time, self.unregister, global_reservation_id, provider_nsa.urn())
         else:
             print "Reservation failed."
 
