@@ -17,13 +17,13 @@ import opennsa.setup
 import opennsa.nsa
 import opennsa.cli.commands
 
-TOPOLOGY_FILE = "SC2011-Topo-v5f.owl"
+TOPOLOGY_FILE = "../topologies/AutoGOLE-Topo.owl"
 WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
 PORT = 9081
 
 
 def doInfo(info_id):
-    topo = opennsa.topology.parseGOLERDFTopology(TOPOLOGY_FILE)
+    topo = opennsa.topology.parseTopology([open(TOPOLOGY_FILE)])
     if ":stp:" in info_id:
         stp = topo.getSTP(info_id)
         if stp:
@@ -41,8 +41,8 @@ def doInfo(info_id):
         
 
 def getNSA(name):
-    topo = opennsa.topology.parseGOLERDFTopology(TOPOLOGY_FILE)
-    for net in topo:
+    topo = opennsa.topology.parseTopology([open(TOPOLOGY_FILE)])
+    for net in topo.networks:
         if net.name == name:
             return net.nsa
         elif net.nsa.identity == name:
@@ -95,7 +95,7 @@ def doQuery(queryArgs):
 
 @defer.inlineCallbacks
 def doReserve(options):
-    topo = opennsa.topology.parseGOLERDFTopology(TOPOLOGY_FILE)
+    topo = opennsa.topology.parseTopology([open(TOPOLOGY_FILE)])
     reservation = options.reserve
     srcNet = reservation[0]
     dstNet = reservation[2]
@@ -163,7 +163,7 @@ def createClient():
     s.connect(("gmail.com",80))
     host = s.getsockname()[0]
     s.close()
-    client, service, factory = opennsa.setup.createClient(host, PORT, WSDL_DIR,timeout=60)
+    client, factory = opennsa.setup.createClient(host, PORT, WSDL_DIR)
     client_nsa = opennsa.nsa.NetworkServiceAgent('OpenNSA-commandline', 'http://%s:%s/NSI/services/ConnectionService' % (host,PORT))
     reactor.listenTCP(PORT, factory)
     return client,client_nsa

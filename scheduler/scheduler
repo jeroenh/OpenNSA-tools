@@ -17,43 +17,32 @@ import opennsa.setup
 import opennsa.nsa
 import opennsa.cli.commands
 
-TOPOLOGY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),"../topologies/AutoGOLE-Topo.owl")
+SCHEDULE = [
+             (("aist.ets","ps-83"),("starlight.ets","ps-83"),"starlight.ets"),
+             (("geant.ets","ps-83"), ("kddi-labs.ets","ps-83"),"aist.ets"),
+            (("starlight.ets","ps-83"),("uvalight.ets","ps-83"),"starlight.ets"),
+            (("uvalight.ets","ps-83"),("krlight.ets","ps-83"),"starlight.ets"),
+             (("uvalight.ets","ps-83"),("kddi-labs.ets","ps-83"),"starlight.ets"),
+            (("uvalight.ets","ps-83"),("northernlight.ets","ps-83"),"aist.ets"),
+             (("aist.ets","ps-83"),("northernlight.ets","ps-83"),"aist.ets"),
+           (("uvalight.ets","ps-83"),("czechlight.ets","ps-83"),"aist.ets"),
+            (("starlight.ets","ps-83"),("geant.ets","ps-83"),"starlight.ets"),
+           ]
 
+TOPOLOGY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),"../topologies/AutoGOLE-Topo.owl")
 WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
 PORT = 6080
-
-def getNSA(name, topo):
-    # topo = opennsa.topology.parseTopology(TOPOLOGY_FILE)
-    for net in topo:
-        if net.name == name:
-            return net.nsa
-        elif net.nsa.identity == name:
-            return net.nsa 
-        else:
-            pass
-    raise Exception("Could not find %s in the topology." % name)
 
 class Scheduler(object):
     def __init__(self):
         self.topo = opennsa.topology.parseTopology([open(TOPOLOGY_FILE)])
 
         self.createClient()
-        #self.counter = uuid.uuid1()
         self.counter = 201
         self.index = 0
         self.connection_id = None
         self.provider_nsa = None
-        self.schedule = [
-                     (("aist.ets","ps-83"),("starlight.ets","ps-83"),"starlight.ets"),
-                     (("geant.ets","ps-83"), ("kddi-labs.ets","ps-83"),"aist.ets"),
-                    (("starlight.ets","ps-83"),("uvalight.ets","ps-83"),"starlight.ets"),
-                    (("uvalight.ets","ps-83"),("krlight.ets","ps-83"),"starlight.ets"),
-                     (("uvalight.ets","ps-83"),("kddi-labs.ets","ps-83"),"starlight.ets"),
-                    (("uvalight.ets","ps-83"),("northernlight.ets","ps-83"),"aist.ets"),
-                     (("aist.ets","ps-83"),("northernlight.ets","ps-83"),"aist.ets"),
-                   (("uvalight.ets","ps-83"),("czechlight.ets","ps-83"),"aist.ets"),
-                    (("starlight.ets","ps-83"),("geant.ets","ps-83"),"starlight.ets"),
-                   ]
+        self.schedule = SCHEDULE
 
     def runSchedule(self):
         res = random.choice(self.schedule)
@@ -84,7 +73,7 @@ class Scheduler(object):
         bwp = opennsa.nsa.BandwidthParameters(200)
         service_params  = opennsa.nsa.ServiceParameters(start_time, end_time, srcSTP, dstSTP, bandwidth=bwp)
         # Send the reservation and wait for response
-        print "Reserving (%s,%s) to (%s,%s) \n at %s (%s)" % (srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip())
+        print "Reserving (%s,%s) to (%s,%s) at %s (%s)" % (srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip())
         r = yield self.client.reserve(self.client_nsa, provider_nsa, None, global_reservation_id, description, connection_id, service_params)
         if r:
             print "Reservation created.\nReservation ID: %s\nConnection ID: %s" % (global_reservation_id,connection_id)
@@ -92,7 +81,7 @@ class Scheduler(object):
                 urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
             reactor.callLater(60, self.doProvision, provider_nsa, connection_id)
             unregister_time = (end_time - datetime.datetime.utcnow()).total_seconds()
-            reactor.callLater(unregister_time, self.unregister, global_reservation_id, provider_nsa.urn())
+            reactor.callLater(unregister_time, self.doUnregister, global_reservation_id, provider_nsa.urn())
         else:
             print "Reservation failed."
 

@@ -4,20 +4,20 @@ import opennsa.topology
 # import os
 import re
 
-topo = opennsa.topology.parseGOLERDFTopology("SC2011-Topo-v5f.owl")
+topo = opennsa.topology.parseTopology([open("topologies/AutoGOLE-Topo.owl")])
 
 wsstringlist = []
-for net in topo:
-    print '"%s": "%s",' % (net.nsa.identity, net.nsa.url())
-    wsstringlist.append(re.search("http://(.*):.*",net.nsa.url()).group(1))
+for net in topo.networks:
+    print '"%s": "%s",' % (net.nsa.identity, net.nsa.url().strip())
+    wsstringlist.append(re.search("https?://(.*):.*",net.nsa.url()).group(1))
 
 print 80*"-"
 print "host "+ " or host ".join(wsstringlist)
 
 print 80*"-"
-for net in topo:
-    print net.location
-    for ep in net.getEndpoints():
+for net in topo.networks:
+    # print net.location
+    for ep in net.endpoints:
         print "nsa.STP('%s','%s')" % (net.name,ep)
     print 80*"-"
 
