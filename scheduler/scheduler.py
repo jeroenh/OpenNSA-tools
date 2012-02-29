@@ -74,7 +74,7 @@ class Scheduler(object):
             start_time = datetime.datetime.utcfromtimestamp(time.time() + 60 ) # one minutes from now
         if not end_time:
             end_time   = start_time + datetime.timedelta(minutes=3)
-        global_reservation_id = 'uva-scheduler:gid-%s' % self.counter
+        global_reservation_id = 'uva-scheduler:gid-%s' % uuid.uuid1()
         self.counter += 1
         connection_id = "urn:uuid:%s" % uuid.uuid1()
         bwp = opennsa.nsa.BandwidthParameters(200)
