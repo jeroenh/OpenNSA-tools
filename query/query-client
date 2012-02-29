@@ -1,0 +1,262 @@
+#!/usr/bin/env python
+
+import uuid
+import random
+import time
+import datetime
+import os
+import sys
+import socket
+import json
+import collections
+import urllib
+import suds.sax.date
+
+from twisted.internet import reactor, defer, task
+
+from opennsa import nsa, setup
+import topology
+import opennsa.error
+
+
+"""Query Agent supporting the Automated GOLE demonstration
+
+The Query Agent
+
+"""
+PORT = 9080
+# Get IP Address of host.
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(("gmail.com",80))
+HOST = s.getsockname()[0]
+s.close()
+
+LOCAL_REQUESTER     = 'http://%s:%s/NSI/services/ConnectionService' % (HOST,PORT)
+
+# NSA_SERVERS = {
+# "kddi-labs": "http://210.196.65.114:9352/connectionprovider",
+# "starlight": "http://nsa.badlab.crc.ca:9080/NSI/services/ConnectionService",
+# "aist": "http://163.220.30.174:8090/nsi_gl_proxy/services/ConnectionServiceProvider",
+# "pionier": "http://194.132.53.174:9080/nsi/ConnectionProviderPort",
+# # "GEANT": "http://autobahn.par.fr.geant2.net:8090/nsi/ConnectionProviderPort",
+# "krlight": "http://203.230.116.202:8090/nsi/ConnectionServiceProvider",
+# "northernlight": "http://orval.grid.aau.dk:9080/NSI/services/ConnectionService",
+# # "netherlight": "http://phineas.surfnet.nl:8080/nsi-v1/ConnectionServiceProvider",
+# }
+
+def setupLocalInfo():
+    global wsdl_dir,topo,watchlist,blacklist
+    wsdl_dir =  os.path.join(os.path.dirname(os.path.abspath(__file__)), 'wsdl')
+    topo = topology.parseGOLERDFTopology(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../topologies/AutoGOLE-Topo.owl"))
+    watchlist = []
+    blacklist = []
+
+def getNetworks():
+    return topo.networks
+
+def parseStpList(stpList):
+    store = {}
+    for stp in stpList:
+        store[stp._order] = stp.stpId
+    keys = store.keys()
+    keys.sort()
+    result = []
+    for k in keys:
+        stp = topo.getSTP(store[k])
+        result.append(stp)
+    return result
+
+class Hop(object):
+    def __init__(self,ep,status="unknown"):
+        self.status = status
+        self.gps = (0,0)
+        self.stps=[]
+        self.nsa = None
+        if ep:
+            self.initFromEndpoint(ep)
+    
+    def initFromEndpoint(self,ep):
+        network = topo.getNetwork(ep.network)
+        self.nsa = network.nsa.urn()
+        self.gps = [network.location]
+        self.stps = [ep.urn()]
+    
+    def addEndpoint(self,ep):
+        assert self.nsa == topo.getNetwork(ep.network).nsa.urn()
+        self.stps.append(ep.urn())
+        self.gps.append(topo.getNetwork(ep.network).location)
+        
+    def toDict(self):
+        return{"nsa":self.nsa,"gps":self.gps,"status":self.status,"stps":self.stps}
+    def summary(self):
+        result = []
+        for s in self.stps:
+            if s.startswith("urn:ogf:network:stp:"):
+                s = s[20:]
+            result.append(s)
+        return result
+
+class Reservation(object):
+    """docstring for Reservation"""
+    def __init__(self, reservationSummary,provider=None):
+        self.initFromSummary(reservationSummary,provider)
+    
+    def initFromSummary(self, res,provider=None):
+        self.grId = str(res.globalReservationId)
+        self.conId = str(res.connectionId)
+        self.provider = str(provider)
+        if hasattr(res, "description"):
+            self.description = str(res.description)
+        else:
+            self.description = ""
+        self.startTime = res.serviceParameters.schedule.startTime
+        self.endTime = res.serviceParameters.schedule.endTime
+        self.schedule = (self.startTime,self.endTime)
+        self.bw_desired = str(res.serviceParameters.bandwidth.desired)
+        self.status = str(res.connectionState).lower()
+        if hasattr(res,"path"):
+            path = [topo.getSTP(res.path.sourceSTP.stpId),topo.getSTP(res.path.destSTP.stpId)]
+            # Insert the path in between the source and destination.
+            if hasattr(res.path,"stpList") and res.path.stpList:
+                path[1:-1] = parseStpList(res.path.stpList.stp)
+        self.processPath(path)
+    
+    def processPath(self,path):
+        prev = None
+        result = []
+        for stp in path:
+            if stp:
+                if topo.getNetwork(stp.network):
+                    if prev and prev.nsa == topo.getNetwork(stp.network).nsa.urn():
+                        prev.addEndpoint(stp)
+                    else:
+                        prev = Hop(stp,self.status)
+                        result.append(prev)
+            else:
+                result.append(Hop(None,"unknown"))
+        self.path = result
+    
+    def toDict(self):
+        return { "connection=id": self.conId,
+                 "global-reservation-id": self.grId,
+                 "description": self.description,
+                 "schedule": {"start-time": self.schedule[0],"end-time": self.schedule[1]},
+                 "bandwidth": self.bw_desired,
+                 "path": [x.toDict() for x in self.path]
+                 }
+    
+    def toJson(self):
+        return json.dumps(self.toDict)
+    
+    def summary(self):
+        result = "provider: %s\nconId: %s\nresId: %s\nschedule: %s,%s\nstatus: %s\n" % \
+            (self.provider,self.conId,self.grId,self.schedule[0],self.schedule[1],self.status)
+        result += "path: %s" % [x.summary() for x in self.path]
+        return result
+    
+
+def getReservationIds():
+    # ress = json.loads(open("reservationIDs.json").read())
+    # result = collections.defaultdict(list)
+    # for urn,nsa in ress:
+    #     result[nsa].append(urn)
+    ress = json.load(urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/registrations"))["result"]
+    return ress
+
+@defer.inlineCallbacks
+def doMain(client,client_nsa):
+    global watchlist,blacklist
+    reservations = []
+    # Set up the details for the remote server
+    queries = []
+    res_ids = getReservationIds()
+    networks = getNetworks()
+    print "Greylist: %s, Blacklist: %s" % (watchlist,blacklist)
+    for network in networks:
+        if not network.name in blacklist:
+            provider = network.nsa
+            global_reservation_ids = []
+            for urn,nsa in res_ids:
+                if nsa in provider.urn():
+                    global_reservation_ids.append(urn)
+            if global_reservation_ids:
+                print "Now querying %s for %s" % (network.name,global_reservation_ids)
+                # print "Would do query on %s with %s now" % (network.name,global_reservation_ids)
+                q =  client.query(client_nsa, provider, None, "Summary", global_reservation_ids=global_reservation_ids, connection_ids = None )
+                q.addErrback(queryFailed, network.name)
+                queries.append(q)
+        else:
+            print "Skipping %s" % network.name
+    for q in queries:
+        qr = yield q
+        if hasattr(qr,"reservationSummary"):
+            for res in qr.reservationSummary:
+                resObj = Reservation(res,qr.providerNSA)
+                if resObj.status == "terminated":
+                    checkTimeout(resObj)
+                    reservations.append(Reservation(res))
+                    print ".",
+                else:
+                    print ""
+                    reservations.append(Reservation(res))
+                    print resObj.summary()
+    for res in reservations:
+        checkTimeout(res)
+    f = open("reservations.json",'w')
+    f.write(json.dumps([x.toDict() for x in reservations],indent=1))
+    f.close()
+
+def checkTimeout(res):
+    et = suds.sax.date.DateTime(res.endTime).value.utctimetuple()
+    endtime = datetime.datetime(et.tm_year, et.tm_mon, et.tm_mday, et.tm_hour, et.tm_min, et.tm_sec)
+    # date1 < date2 == date1 precedes date2
+    # need to check endtime < now-5min
+    if endtime < datetime.datetime.utcnow()-datetime.timedelta(minutes=5):
+        print "Removing %s" % res.grId
+        urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/unregister?urn=%s" % res.grId)
+    
+def watchListRemove(name):
+    global blacklist
+    blacklist.remove(name)
+
+def queryFailed(err, name):
+    global watchlist,blacklist
+    if err.check(opennsa.error.CallbackTimeoutError):
+        sys.stderr.write("Timeout occured for %s\n" % (name))
+        sys.stderr.flush()
+        # First offense, you go on watchlist.
+        # Second offense, you're out for 10 minutes.
+        if name in watchlist:
+            watchlist.remove(name)
+            blacklist.append(name)
+            reactor.callLater(600,watchListRemove,name)
+        else:
+            watchlist.append(name)
+
+    else:
+        sys.stderr.write("Query error for %s: %s\n" % (name,err))
+
+    
+# def main():
+#     d = defer.maybeDeferred(doMain)
+# 
+#     def p(failure):
+#         failure.printTraceback()
+# 
+#     d.addErrback(p)
+#     d.addBoth(lambda _ : reactor.stop() )
+#     return d
+
+
+if __name__ == '__main__':
+    # Set up the local client
+    setupLocalInfo()
+    client, factory = setup.createClient(HOST, PORT, wsdl_dir)
+    reactor.listenTCP(PORT, factory)
+    client_nsa      = nsa.NetworkServiceAgent('OpenNSA-querier', LOCAL_REQUESTER)
+    
+    l = task.LoopingCall(doMain,client,client_nsa)
+    l.start(10.0) # call every second
+
+    reactor.run()
+
