@@ -16,6 +16,7 @@ from twisted.internet import reactor, defer, task
 
 from opennsa import nsa, setup
 import topology
+# import topology
 import opennsa.error
 
 
@@ -46,7 +47,7 @@ LOCAL_REQUESTER     = 'http://%s:%s/NSI/services/ConnectionService' % (HOST,PORT
 
 def setupLocalInfo():
     global wsdl_dir,topo,watchlist,blacklist
-    wsdl_dir =  os.path.join(os.path.dirname(os.path.abspath(__file__)), 'wsdl')
+    wsdl_dir =  os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
     topo = topology.parseGOLERDFTopology(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../topologies/AutoGOLE-Topo.owl"))
     watchlist = []
     blacklist = []
@@ -62,6 +63,8 @@ def parseStpList(stpList):
     keys.sort()
     result = []
     for k in keys:
+        # We have the identifier stored, do we really need the object?
+        # The result is just going to be the identifier anyway...
         stp = topo.getSTP(store[k])
         result.append(stp)
     return result

@@ -21,11 +21,14 @@ TOPOLOGY_FILE = "../topologies/AutoGOLE-Topo.owl"
 WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
 PORT = 9081
 
-
+def getSTP(topo,stp_id):
+    tokens = stp_id.replace(opennsa.nsa.STP_PREFIX, '').split(':', 2)
+    return topo.getEndpoint(tokens[0],tokens[1])
+    
 def doInfo(info_id):
     topo = opennsa.topology.parseTopology([open(TOPOLOGY_FILE)])
     if ":stp:" in info_id:
-        stp = topo.getSTP(info_id)
+        stp = getSTP(topo,info_id)
         if stp:
             print stp.urn()
             print "  network: %s" % topo.getNetwork(stp.network).name
@@ -59,6 +62,19 @@ def doTerminate(terminateArgs):
     _ = yield client.terminate(client_nsa, nsa, None, conId)
     print "Reservation terminated"
 
+def parseStpList(stpList):
+    topo = opennsa.topology.parseTopology([open(TOPOLOGY_FILE)])
+    store = {}
+    for stp in stpList:
+        store[stp._order] = stp.stpId
+    keys = store.keys()
+    keys.sort()
+    result = []
+    for k in keys:
+        # stp = getSTP(topo,store[k])
+        stp = store[k]
+        result.append(stp)
+    return result
 
 @defer.inlineCallbacks
 def doQuery(queryArgs):
@@ -86,8 +102,9 @@ def doQuery(queryArgs):
             if hasattr(res,"path"):
                 if hasattr(res.path,"stpList"):
                     print "stplist: %s" % (res.path.stpList.stp)
+                    print "parsedList: %s" % (parseStpList(res.path.stpList.stp))
                 else:
-                    print "stpList: " + str([res.path.sourceSTP.stpId,res.path.destSTP.stpId]) 
+                    print "stpList: " + str([res.path.sourceSTP.stpId,res.path.destSTP.stpId])
             print "Typeinfo: %s" % (type(res.serviceParameters.schedule.startTime))
     else:
         print qr
