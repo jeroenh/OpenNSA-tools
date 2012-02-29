@@ -24,7 +24,7 @@ SCHEDULE = [
             (("starlight.ets","ps-83"),("uvalight.ets","ps-83"),"starlight.ets"),
             (("uvalight.ets","ps-83"),("krlight.ets","ps-83"),"starlight.ets"),
              (("uvalight.ets","ps-83"),("kddi-labs.ets","ps-83"),"starlight.ets"),
-            (("uvalight.ets","ps-83"),("northernlight.ets","ps-83"),"aist.ets"),
+            (("uvalight.ets","ps-83"),("northernlight.ets","ps-83"),"uvalight.ets"),
              (("aist.ets","ps-83"),("northernlight.ets","ps-83"),"aist.ets"),
            (("uvalight.ets","ps-83"),("czechlight.ets","ps-83"),"aist.ets"),
             (("starlight.ets","ps-83"),("geant.ets","ps-83"),"starlight.ets"),
@@ -53,7 +53,7 @@ class Scheduler(object):
         reactor.callLater(0,self.doReserve,res)
     
     def setupLogging(self):
-        logging.basicConfig(filename="scheduler.log", format='%(asctime)-15s %(levelname)-8s %(name)-15s %(message)s')
+        logging.basicConfig(filename="scheduler.log", format='%(asctime)-15s %(message)s')
         self.logger = logging.getLogger("scheduler")
         self.logger.setLevel(10)
 

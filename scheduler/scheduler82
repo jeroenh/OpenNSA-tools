@@ -24,7 +24,7 @@ SCHEDULE = [
                  (("starlight.ets","ps-82"),("uvalight.ets","ps-82"),"starlight.ets"),
                  (("uvalight.ets","ps-82"),("krlight.ets","ps-82"),"starlight.ets"),
                   (("uvalight.ets","ps-82"),("kddi-labs.ets","ps-82"),"starlight.ets"),
-                 (("uvalight.ets","ps-82"),("northernlight.ets","ps-82"),"northernlight.ets"),
+                 (("uvalight.ets","ps-82"),("northernlight.ets","ps-82"),"uvalight.ets"),
                   (("aist.ets","ps-82"),("northernlight.ets","ps-82"),"aist.ets"),
                 (("uvalight.ets","ps-82"),("czechlight.ets","ps-82"),"northernlight.ets"),
                  (("starlight.ets","ps-82"),("geant.ets","ps-82"),"starlight.ets"),
