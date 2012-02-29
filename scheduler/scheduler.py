@@ -107,10 +107,10 @@ class Scheduler(object):
             print "Reservation failed, skipping termination."
 
     @defer.inlineCallbacks
-    def doUnregister(self, global_reservation_id, nsa):
+    def doUnregister(self, global_reservation_id, provider_nsa):
         print "Unregistering reservation ID: %s" % (global_reservation_id)
         urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/unregister",
-            urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
+            urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa}))
         
     def createClient(self):
         # Constructing the client NSA
