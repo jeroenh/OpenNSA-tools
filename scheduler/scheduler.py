@@ -12,7 +12,7 @@ import sys
 import urllib
 import random
 
-import opennsa.topology
+import topology
 import opennsa.setup
 import opennsa.nsa
 import opennsa.cli.commands
@@ -34,15 +34,15 @@ WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
 PORT = 6080
 
 class Scheduler(object):
-    def __init__(self):
-        self.topo = opennsa.topology.parseTopology([open(TOPOLOGY_FILE)])
+    def __init__(self,schedule):
+        self.topo = topology.parseGOLERDFTopology(TOPOLOGY_FILE)
 
         self.createClient()
         self.counter = 201
         self.index = 0
         self.connection_id = None
         self.provider_nsa = None
-        self.schedule = SCHEDULE
+        self.schedule = schedule
 
     def runSchedule(self):
         res = random.choice(self.schedule)
@@ -74,7 +74,11 @@ class Scheduler(object):
         service_params  = opennsa.nsa.ServiceParameters(start_time, end_time, srcSTP, dstSTP, bandwidth=bwp)
         # Send the reservation and wait for response
         print "Reserving (%s,%s) to (%s,%s) at %s (%s)" % (srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip())
-        r = yield self.client.reserve(self.client_nsa, provider_nsa, None, global_reservation_id, description, connection_id, service_params)
+        try:
+            r = yield self.client.reserve(self.client_nsa, provider_nsa, None, global_reservation_id, description, connection_id, service_params)
+        except opennsa.error.ReserveError, e:
+            print "Failure: %s" % e 
+            return
         if r:
             print "Reservation created.\nReservation ID: %s\nConnection ID: %s" % (global_reservation_id,connection_id)
             urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/register",
@@ -123,7 +127,7 @@ def main():
     def handleError(x):
         x.printTraceback()
         reactor.stop()
-    s = Scheduler()
+    s = Scheduler(SCHEDULE)
     l = task.LoopingCall(s.runSchedule)
     l.start(200.0) # call every four minutes
 

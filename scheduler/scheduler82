@@ -16,6 +16,7 @@ import opennsa.topology
 import opennsa.setup
 import opennsa.nsa
 import opennsa.cli.commands
+import scheduler
 
 SCHEDULE = [
                   (("aist.ets","ps-82"),("starlight.ets","ps-82"),"starlight.ets"),
@@ -33,97 +34,97 @@ TOPOLOGY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),"../topo
 WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
 
 
-class Scheduler(object):
-    def __init__(self):
-        self.topo = opennsa.topology.parseTopology([open(TOPOLOGY_FILE)])
-
-        self.createClient()
-        self.counter = 201
-        self.index = 0
-        self.connection_id = None
-        self.provider_nsa = None
-        self.schedule = SCHEDULE
-
-    def runSchedule(self):
-        res = random.choice(self.schedule)
-        # reserve adds callLater for Provision, which callLaters Terminate
-        reactor.callLater(0,self.doReserve,res)
-        
-
-    @defer.inlineCallbacks
-    def doReserve(self,reservation):
-        # reservation = options.reserve
-        srcNet = self.topo.getNetwork(reservation[0][0])
-        srcSTP = srcNet.getEndpoint(reservation[0][1])
-        dstNet = self.topo.getNetwork(reservation[1][0])
-        dstSTP = dstNet.getEndpoint(reservation[1][1])
-        provider_nsa = self.topo.getNetwork(reservation[2]).nsa
-        # Setting some defaults for now, to fill in later
-        start_time=None
-        end_time=None
-        description='Scheduled Connection'
-        # Constructing the ServiceParamaters
-        if not start_time:
-            start_time = datetime.datetime.utcfromtimestamp(time.time() + 60 ) # one minutes from now
-        if not end_time:
-            end_time   = start_time + datetime.timedelta(minutes=3)
-        global_reservation_id = 'uva-scheduler:gid-%s' % self.counter
-        self.counter += 1
-        connection_id = "urn:uuid:%s" % uuid.uuid1()
-        bwp = opennsa.nsa.BandwidthParameters(200)
-        service_params  = opennsa.nsa.ServiceParameters(start_time, end_time, srcSTP, dstSTP, bandwidth=bwp)
-        # Send the reservation and wait for response
-        print "Reserving (%s,%s) to (%s,%s) at %s (%s)" % (srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip())
-        r = yield self.client.reserve(self.client_nsa, provider_nsa, None, global_reservation_id, description, connection_id, service_params)
-        if r:
-            print "Reservation created.\nReservation ID: %s\nConnection ID: %s" % (global_reservation_id,connection_id)
-            urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/register",
-                urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
-            reactor.callLater(60, self.doProvision, provider_nsa, connection_id)
-            unregister_time = (end_time - datetime.datetime.utcnow()).total_seconds()
-            reactor.callLater(unregister_time, self.doUnregister, global_reservation_id, provider_nsa.urn())
-        else:
-            print "Reservation failed."
-
-    @defer.inlineCallbacks
-    def doProvision(self,provider_nsa,connection_id):
-        if connection_id:
-            print "Provisioning %s at %s" % (connection_id, provider_nsa)
-            qr = yield self.client.provision(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
-            reactor.callLater(100, self.doTerminate, provider_nsa, connection_id)
-        else:
-            print "Reservation failed, skipping provision."
-            
-    @defer.inlineCallbacks
-    def doTerminate(self, provider_nsa, connection_id):
-        if connection_id:
-            print "Terminating %s at %s" % (connection_id, provider_nsa)
-            qr = yield self.client.terminate(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
-        else:
-            print "Reservation failed, skipping termination."
-
-    @defer.inlineCallbacks
-    def doUnregister(self, global_reservation_id, nsa):
-        print "Unregistering reservation ID: %s" % (global_reservation_id)
-        urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/unregister",
-            urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
-        
-    def createClient(self):
-        # Constructing the client NSA
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("gmail.com",80))
-        host = s.getsockname()[0]
-        s.close()
-        self.client, factory = opennsa.setup.createClient(host, PORT, WSDL_DIR)
-        self.client_nsa = opennsa.nsa.NetworkServiceAgent('AutoScheduler', 'http://%s:%s/NSI/services/ConnectionService' % (host,PORT))
-        reactor.listenTCP(PORT, factory)
-        # return client,client_nsa
+# class Scheduler(object):
+#     def __init__(self,schedule):
+#         self.topo = topology.parseGOLERDFTopology(TOPOLOGY_FILE)
+# 
+#         self.createClient()
+#         self.counter = 201
+#         self.index = 0
+#         self.connection_id = None
+#         self.provider_nsa = None
+#         self.schedule = schedule
+# 
+#     def runSchedule(self):
+#         res = random.choice(self.schedule)
+#         # reserve adds callLater for Provision, which callLaters Terminate
+#         reactor.callLater(0,self.doReserve,res)
+#         
+# 
+#     @defer.inlineCallbacks
+#     def doReserve(self,reservation):
+#         # reservation = options.reserve
+#         srcNet = self.topo.getNetwork(reservation[0][0])
+#         srcSTP = srcNet.getEndpoint(reservation[0][1])
+#         dstNet = self.topo.getNetwork(reservation[1][0])
+#         dstSTP = dstNet.getEndpoint(reservation[1][1])
+#         provider_nsa = self.topo.getNetwork(reservation[2]).nsa
+#         # Setting some defaults for now, to fill in later
+#         start_time=None
+#         end_time=None
+#         description='Scheduled Connection'
+#         # Constructing the ServiceParamaters
+#         if not start_time:
+#             start_time = datetime.datetime.utcfromtimestamp(time.time() + 60 ) # one minutes from now
+#         if not end_time:
+#             end_time   = start_time + datetime.timedelta(minutes=3)
+#         global_reservation_id = 'uva-scheduler:gid-%s' % self.counter
+#         self.counter += 1
+#         connection_id = "urn:uuid:%s" % uuid.uuid1()
+#         bwp = opennsa.nsa.BandwidthParameters(200)
+#         service_params  = opennsa.nsa.ServiceParameters(start_time, end_time, srcSTP, dstSTP, bandwidth=bwp)
+#         # Send the reservation and wait for response
+#         print "Reserving (%s,%s) to (%s,%s) at %s (%s)" % (srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip())
+#         r = yield self.client.reserve(self.client_nsa, provider_nsa, None, global_reservation_id, description, connection_id, service_params)
+#         if r:
+#             print "Reservation created.\nReservation ID: %s\nConnection ID: %s" % (global_reservation_id,connection_id)
+#             urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/register",
+#                 urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
+#             reactor.callLater(60, self.doProvision, provider_nsa, connection_id)
+#             unregister_time = (end_time - datetime.datetime.utcnow()).total_seconds()
+#             reactor.callLater(unregister_time, self.doUnregister, global_reservation_id, provider_nsa.urn())
+#         else:
+#             print "Reservation failed."
+# 
+#     @defer.inlineCallbacks
+#     def doProvision(self,provider_nsa,connection_id):
+#         if connection_id:
+#             print "Provisioning %s at %s" % (connection_id, provider_nsa)
+#             qr = yield self.client.provision(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
+#             reactor.callLater(100, self.doTerminate, provider_nsa, connection_id)
+#         else:
+#             print "Reservation failed, skipping provision."
+#             
+#     @defer.inlineCallbacks
+#     def doTerminate(self, provider_nsa, connection_id):
+#         if connection_id:
+#             print "Terminating %s at %s" % (connection_id, provider_nsa)
+#             qr = yield self.client.terminate(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
+#         else:
+#             print "Reservation failed, skipping termination."
+# 
+#     @defer.inlineCallbacks
+#     def doUnregister(self, global_reservation_id, nsa):
+#         print "Unregistering reservation ID: %s" % (global_reservation_id)
+#         urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/unregister",
+#             urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
+#         
+#     def createClient(self):
+#         # Constructing the client NSA
+#         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+#         s.connect(("gmail.com",80))
+#         host = s.getsockname()[0]
+#         s.close()
+#         self.client, factory = opennsa.setup.createClient(host, PORT, WSDL_DIR)
+#         self.client_nsa = opennsa.nsa.NetworkServiceAgent('AutoScheduler', 'http://%s:%s/NSI/services/ConnectionService' % (host,PORT))
+#         reactor.listenTCP(PORT, factory)
+#         # return client,client_nsa
 
 def main():
     def handleError(x):
         x.printTraceback()
         reactor.stop()
-    s = Scheduler()
+    s = scheduler.Scheduler(SCHEDULE)
     l = task.LoopingCall(s.runSchedule)
     l.start(200.0) # call every four minutes
 
