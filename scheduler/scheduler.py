@@ -11,6 +11,7 @@ import time
 import sys
 import urllib
 import random
+import logging
 
 import topology
 import opennsa.setup
@@ -44,12 +45,17 @@ class Scheduler(object):
         self.schedule = schedule
         self.port = port
         self.createClient()
+        self.setupLogging()
 
     def runSchedule(self):
         res = random.choice(self.schedule)
         # reserve adds callLater for Provision, which callLaters Terminate
         reactor.callLater(0,self.doReserve,res)
-        
+    
+    def setupLogging(self):
+        logging.basicConfig(filename="scheduler.log", format='%(asctime)-15s %(levelname)-8s %(name)-15s %(message)s')
+        self.logger = logging.getLogger("scheduler")
+        self.logger.setLevel(10)
 
     @defer.inlineCallbacks
     def doReserve(self,reservation):
@@ -79,6 +85,7 @@ class Scheduler(object):
             r = yield self.client.reserve(self.client_nsa, provider_nsa, None, global_reservation_id, description, connection_id, service_params)
         except opennsa.error.ReserveError, e:
             print "Failure: %s" % e 
+            self.logger.info("ReserveError: %s" % e)
             return
         if r:
             print "Reservation created.\nReservation ID: %s\nConnection ID: %s" % (global_reservation_id,connection_id)
