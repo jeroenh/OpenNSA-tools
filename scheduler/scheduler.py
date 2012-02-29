@@ -37,13 +37,13 @@ class Scheduler(object):
     def __init__(self,schedule,port):
         self.topo = topology.parseGOLERDFTopology(TOPOLOGY_FILE)
 
-        self.createClient()
         self.counter = 201
         self.index = 0
         self.connection_id = None
         self.provider_nsa = None
         self.schedule = schedule
         self.port = port
+        self.createClient()
 
     def runSchedule(self):
         res = random.choice(self.schedule)
