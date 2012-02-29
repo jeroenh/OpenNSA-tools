@@ -124,7 +124,7 @@ def main():
     def handleError(x):
         x.printTraceback()
         reactor.stop()
-    s = scheduler.Scheduler(SCHEDULE)
+    s = scheduler.Scheduler(SCHEDULE,PORT)
     l = task.LoopingCall(s.runSchedule)
     l.start(200.0) # call every four minutes
 

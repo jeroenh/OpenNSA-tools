@@ -34,7 +34,7 @@ WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
 PORT = 6080
 
 class Scheduler(object):
-    def __init__(self,schedule):
+    def __init__(self,schedule,port):
         self.topo = topology.parseGOLERDFTopology(TOPOLOGY_FILE)
 
         self.createClient()
@@ -43,6 +43,7 @@ class Scheduler(object):
         self.connection_id = None
         self.provider_nsa = None
         self.schedule = schedule
+        self.port = port
 
     def runSchedule(self):
         res = random.choice(self.schedule)
@@ -118,16 +119,16 @@ class Scheduler(object):
         s.connect(("gmail.com",80))
         host = s.getsockname()[0]
         s.close()
-        self.client, factory = opennsa.setup.createClient(host, PORT, WSDL_DIR)
-        self.client_nsa = opennsa.nsa.NetworkServiceAgent('AutoScheduler', 'http://%s:%s/NSI/services/ConnectionService' % (host,PORT))
-        reactor.listenTCP(PORT, factory)
+        self.client, factory = opennsa.setup.createClient(host, self.port, WSDL_DIR)
+        self.client_nsa = opennsa.nsa.NetworkServiceAgent('AutoScheduler', 'http://%s:%s/NSI/services/ConnectionService' % (host,self.port))
+        reactor.listenTCP(self.port, factory)
         # return client,client_nsa
 
 def main():
     def handleError(x):
         x.printTraceback()
         reactor.stop()
-    s = Scheduler(SCHEDULE)
+    s = Scheduler(SCHEDULE,PORT)
     l = task.LoopingCall(s.runSchedule)
     l.start(200.0) # call every four minutes
 
