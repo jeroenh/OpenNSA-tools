@@ -17,6 +17,7 @@ import topology
 import opennsa.setup
 import opennsa.nsa
 import opennsa.cli.commands
+import opennsa.error
 
 SCHEDULE = [
              (("aist.ets","ps-83"),("starlight.ets","ps-83"),"starlight.ets"),
@@ -35,7 +36,7 @@ WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
 PORT = 6080
 
 def handleAttributeError(failure):
-    e = failure.trap(exceptions.AttributeError)
+    e = failure.trap(opennsa.error.AttributeError)
     print e.getErrorMessage()
 
 class Scheduler(object):
