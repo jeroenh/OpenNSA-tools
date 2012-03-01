@@ -99,7 +99,7 @@ class Scheduler(object):
             reactor.callLater(60, self.doProvision, provider_nsa, connection_id)
             unregister_time = (end_time - datetime.datetime.utcnow()).total_seconds()
             d = task.deferLater(reactor, unregister_time, self.doUnregister, global_reservation_id, provider_nsa.urn())
-            d.addErrBack(handleAttributeError)
+            d.addErrback(handleAttributeError)
         else:
             print "Reservation failed."
 
