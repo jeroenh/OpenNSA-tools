@@ -221,8 +221,8 @@ def checkTimeout(res):
     # date1 < date2 == date1 precedes date2
     # need to check endtime < now-5min
     if endtime < datetime.datetime.utcnow()-datetime.timedelta(minutes=5):
-        print "Removing %s" % res.grId
-        urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/unregister?urn=%s" % res.grId)
+        print "Removing %s" % res.globalReservationId
+        urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/unregister?urn=%s" % res.globalReservationId)
     
 def watchListRemove(name):
     global blacklist
