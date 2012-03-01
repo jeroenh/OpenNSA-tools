@@ -38,7 +38,7 @@ PORT = 6080
 
 def handleAttributeError(failure):
     e = failure.trap(exceptions.AttributeError)
-    print e.getErrorMessage()
+    print e.message
 
 class Scheduler(object):
     def __init__(self,schedule,port):
