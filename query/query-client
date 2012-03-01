@@ -206,7 +206,9 @@ def doMain(client,client_nsa):
                         print resObj.summary()
                 except KeyError:
                     # Path contains something not in the topology. Ignore.
-                    pass
+                    print "Incorrect path found: %s" % res.path.stpList
+                    print "Removing %s" % res.grId
+                    urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/unregister?urn=%s" % res.grId)
     for res in reservations:
         checkTimeout(res)
     f = open("reservations.json",'w')
