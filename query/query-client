@@ -194,15 +194,19 @@ def doMain(client,client_nsa):
         qr = yield q
         if hasattr(qr,"reservationSummary"):
             for res in qr.reservationSummary:
-                resObj = Reservation(res,qr.providerNSA)
-                if resObj.status == "terminated":
-                    checkTimeout(resObj)
-                    reservations.append(Reservation(res))
-                    print ".",
-                else:
-                    print ""
-                    reservations.append(Reservation(res))
-                    print resObj.summary()
+                try:
+                    resObj = Reservation(res,qr.providerNSA)
+                    if resObj.status == "terminated":
+                        checkTimeout(resObj)
+                        reservations.append(Reservation(res))
+                        print ".",
+                    else:
+                        print ""
+                        reservations.append(Reservation(res))
+                        print resObj.summary()
+                except KeyError:
+                    # Path contains something not in the topology. Ignore.
+                    pass
     for res in reservations:
         checkTimeout(res)
     f = open("reservations.json",'w')
