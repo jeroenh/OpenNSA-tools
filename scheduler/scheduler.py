@@ -12,6 +12,7 @@ import sys
 import urllib
 import random
 import logging
+import exceptions
 
 import topology
 import opennsa.setup
@@ -36,7 +37,7 @@ WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
 PORT = 6080
 
 def handleAttributeError(failure):
-    e = failure.trap(opennsa.error.AttributeError)
+    e = failure.trap(exceptions.AttributeError)
     print e.getErrorMessage()
 
 class Scheduler(object):
