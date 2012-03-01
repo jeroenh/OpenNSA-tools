@@ -34,6 +34,10 @@ TOPOLOGY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),"../topo
 WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
 PORT = 6080
 
+def handleAttributeError(failure):
+    e = failure.trap(exceptions.AttributeError)
+    print e.getErrorMessage()
+
 class Scheduler(object):
     def __init__(self,schedule,port):
         self.topo = topology.parseGOLERDFTopology(TOPOLOGY_FILE)
@@ -94,7 +98,8 @@ class Scheduler(object):
                 urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
             reactor.callLater(60, self.doProvision, provider_nsa, connection_id)
             unregister_time = (end_time - datetime.datetime.utcnow()).total_seconds()
-            reactor.callLater(unregister_time, self.doUnregister, global_reservation_id, provider_nsa.urn())
+            d = task.deferLater(reactor, unregister_time, self.doUnregister, global_reservation_id, provider_nsa.urn())
+            d.addErrBack(handleAttributeError)
         else:
             print "Reservation failed."
 
@@ -132,10 +137,7 @@ class Scheduler(object):
         reactor.listenTCP(self.port, factory)
         # return client,client_nsa
 
-def main():
-    def handleError(x):
-        x.printTraceback()
-        reactor.stop()
+def main():        
     s = Scheduler(SCHEDULE,PORT)
     l = task.LoopingCall(s.runSchedule)
     l.start(200.0) # call every four minutes
