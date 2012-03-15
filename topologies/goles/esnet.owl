@@ -1,0 +1,221 @@
+<rdf:RDF xmlns="http://www.glif.is/working-groups/tech/dtox#"
+     xml:base="http://www.glif.is/working-groups/tech/dtox"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:dtox="http://www.glif.is/working-groups/tech/dtox#">
+
+    <owl:Ontology rdf:about="http://www.glif.is/working-groups/tech/dtox"/>
+
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:AnnotationProperty rdf:about="http://www.w3.org/2000/01/rdf-schema#comment"/>
+    <owl:AnnotationProperty rdf:about="http://www.w3.org/2000/01/rdf-schema#label"/>
+
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    <!-- http://www.w3.org/2002/07/owl#hasPart -->
+
+    <owl:ObjectProperty rdf:about="http://www.w3.org/2002/07/owl#hasPart"/>
+
+    <!-- http://www.w3.org/2002/07/owl#partOf -->
+
+    <owl:ObjectProperty rdf:about="http://www.w3.org/2002/07/owl#partOf"/>
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#connectedTo -->
+
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#connectedTo"/>
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#hasSTP -->
+
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#hasSTP"/>
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#managedBy -->
+
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#managedBy"/>
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#managing -->
+
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#managing"/>
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#mapsTo -->
+
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#mapsTo"/>
+ 
+    <!-- http://www.glif.is/working-groups/tech/dtox#locatedAt -->
+    
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#locatedAt"/>
+    
+    
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#adminContact -->
+
+    <owl:DatatypeProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#adminContact"/>
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#csProviderEndpoint -->
+
+    <owl:DatatypeProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#csProviderEndpoint"/>
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#NSA -->
+
+    <owl:Class rdf:about="http://www.glif.is/working-groups/tech/dtox#NSA"/>
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#NSNetwork -->
+
+    <owl:Class rdf:about="http://www.glif.is/working-groups/tech/dtox#NSNetwork"/>
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#STP -->
+
+    <owl:Class rdf:about="http://www.glif.is/working-groups/tech/dtox#STP"/>
+    
+    <!-- http://www.glif.is/working-groups/tech/dtox#Location -->
+    
+    <owl:Class rdf:about="http://www.glif.is/working-groups/tech/dtox#Location"/>
+    
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+<!-- *** ESnet -->    
+    
+    <!-- urn:ogf:network:stp:esnet.ets:ps-80 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:esnet.ets:ps-80">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+    </owl:NamedIndividual>
+    <!-- urn:ogf:network:stp:esnet.ets:ps-81 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:esnet.ets:ps-81">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+    </owl:NamedIndividual>
+    <!-- urn:ogf:network:stp:esnet.ets:ps-82 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:esnet.ets:ps-82">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+    </owl:NamedIndividual>
+    <!-- urn:ogf:network:stp:esnet.ets:ps-83 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:esnet.ets:ps-83">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+    </owl:NamedIndividual>
+    
+    <!-- urn:ogf:network:stp:esnet.ets:chi-80 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:esnet.ets:chi-80">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+        <connectedTo rdf:resource="urn:ogf:network:stp:starlight.ets:esn-80"/>
+    </owl:NamedIndividual>
+    <!-- urn:ogf:network:stp:esnet.ets:chi-81 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:esnet.ets:chi-81">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+        <connectedTo rdf:resource="urn:ogf:network:stp:starlight.ets:esn-81"/>
+    </owl:NamedIndividual>
+    <!-- urn:ogf:network:stp:esnet.ets:chi-82 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:esnet.ets:chi-82">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+        <connectedTo rdf:resource="urn:ogf:network:stp:starlight.ets:esn-82"/>
+    </owl:NamedIndividual>
+    <!-- urn:ogf:network:stp:esnet.ets:chi-83 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:esnet.ets:chi-83">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+        <connectedTo rdf:resource="urn:ogf:network:stp:starlight.ets:esn-83"/>
+    </owl:NamedIndividual>
+    
+    <!-- urn:ogf:network:nsnetwork:esnet.ets -->
+    
+    <owl:NamedIndividual rdf:about="urn:ogf:network:nsnetwork:esnet.ets">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#NSNetwork"/>
+        <rdfs:label xml:lang="en">esnet.ets</rdfs:label>
+        <hasSTP rdf:resource="urn:ogf:network:stp:esnet.ets:ps-80"/>
+        <hasSTP rdf:resource="urn:ogf:network:stp:esnet.ets:ps-81"/>
+        <hasSTP rdf:resource="urn:ogf:network:stp:esnet.ets:ps-82"/>
+        <hasSTP rdf:resource="urn:ogf:network:stp:esnet.ets:ps-83"/>
+        <hasSTP rdf:resource="urn:ogf:network:stp:esnet.ets:chi-80"/>
+        <hasSTP rdf:resource="urn:ogf:network:stp:esnet.ets:chi-81"/>
+        <hasSTP rdf:resource="urn:ogf:network:stp:esnet.ets:chi-82"/>
+        <hasSTP rdf:resource="urn:ogf:network:stp:esnet.ets:chi-83"/>
+        <managedBy rdf:resource="urn:ogf:network:nsa:esnet"/>
+        <locatedAt rdf:resource="urn:ogf:network:nsnetwork:esnet.ets:location"/>
+    </owl:NamedIndividual>
+    
+    <!-- urn:ogf:network:nsnetwork:esnet.ets:location  ???, US -->
+    
+    <owl:NamedIndividual rdf:about="urn:ogf:network:nsnetwork:esnet.ets:location">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#Location"/>
+        <lat rdf:datatype="http://www.w3.org/2001/XMLSchema#float">41.703516</lat>
+        <long rdf:datatype="http://www.w3.org/2001/XMLSchema#float">-87.988120</long>
+    </owl:NamedIndividual>
+    
+    <!-- urn:ogf:network:nsa:esnet -->
+    
+    <owl:NamedIndividual rdf:about="urn:ogf:network:nsa:esnet">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#NSA"/>
+        <managing rdf:resource="urn:ogf:network:nsnetwork:esnet.ets" />
+        <adminContact rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
+            NSA: OSCARS 
+            Project Manager: Inder Monga 
+            Email: imonga@es.net 
+            Software development engineer: Evangelos Chaniotakis 
+            Email:  haniotak@es.net
+        </adminContact>
+        <csProviderEndpoint rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
+            http://jupiter.es.net:8288/ConnectionService
+        </csProviderEndpoint>
+    </owl:NamedIndividual>
+</rdf:RDF>

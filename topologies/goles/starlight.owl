@@ -1,0 +1,300 @@
+<rdf:RDF xmlns="http://www.glif.is/working-groups/tech/dtox#"
+     xml:base="http://www.glif.is/working-groups/tech/dtox"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:dtox="http://www.glif.is/working-groups/tech/dtox#">
+
+    <owl:Ontology rdf:about="http://www.glif.is/working-groups/tech/dtox"/>
+
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:AnnotationProperty rdf:about="http://www.w3.org/2000/01/rdf-schema#comment"/>
+    <owl:AnnotationProperty rdf:about="http://www.w3.org/2000/01/rdf-schema#label"/>
+
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    <!-- http://www.w3.org/2002/07/owl#hasPart -->
+
+    <owl:ObjectProperty rdf:about="http://www.w3.org/2002/07/owl#hasPart"/>
+
+    <!-- http://www.w3.org/2002/07/owl#partOf -->
+
+    <owl:ObjectProperty rdf:about="http://www.w3.org/2002/07/owl#partOf"/>
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#connectedTo -->
+
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#connectedTo"/>
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#hasSTP -->
+
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#hasSTP"/>
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#managedBy -->
+
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#managedBy"/>
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#managing -->
+
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#managing"/>
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#mapsTo -->
+
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#mapsTo"/>
+ 
+    <!-- http://www.glif.is/working-groups/tech/dtox#locatedAt -->
+    
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#locatedAt"/>
+    
+    
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#adminContact -->
+
+    <owl:DatatypeProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#adminContact"/>
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#csProviderEndpoint -->
+
+    <owl:DatatypeProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#csProviderEndpoint"/>
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#NSA -->
+
+    <owl:Class rdf:about="http://www.glif.is/working-groups/tech/dtox#NSA"/>
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#NSNetwork -->
+
+    <owl:Class rdf:about="http://www.glif.is/working-groups/tech/dtox#NSNetwork"/>
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#STP -->
+
+    <owl:Class rdf:about="http://www.glif.is/working-groups/tech/dtox#STP"/>
+    
+    <!-- http://www.glif.is/working-groups/tech/dtox#Location -->
+    
+    <owl:Class rdf:about="http://www.glif.is/working-groups/tech/dtox#Location"/>
+    
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+	 <!-- *** StarLight -->    
+    
+	     <!-- urn:ogf:network:stp:starlight.ets:ps-80 -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:ps-80">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	     </owl:NamedIndividual>
+	     <!-- urn:ogf:network:stp:starlight.ets:ps-81 -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:ps-81">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	     </owl:NamedIndividual>
+	     <!-- urn:ogf:network:stp:starlight.ets:ps-82 -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:ps-82">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	     </owl:NamedIndividual>
+	     <!-- urn:ogf:network:stp:starlight.ets:ps-83 -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:ps-83">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	     </owl:NamedIndividual>
+    
+	     <!-- urn:ogf:network:stp:starlight.ets:ams-80    IRNC -->  
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:ams-80">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:netherlight.ets:chi-80"/>
+	     </owl:NamedIndividual>                   
+	     <!-- urn:ogf:network:stp:starlight.ets:ams-81    IRNC -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:ams-81">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:netherlight.ets:chi-81"/>
+	     </owl:NamedIndividual>
+	     <!-- urn:ogf:network:stp:starlight.ets:ams-82    IRNC -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:ams-82">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:netherlight.ets:chi-82"/>
+	     </owl:NamedIndividual>
+	     <!-- urn:ogf:network:stp:starlight.ets:ams-83    IRNC -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:ams-83">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:netherlight.ets:chi-83"/>
+	     </owl:NamedIndividual>
+    
+	     <!-- urn:ogf:network:stp:starlight.ets:esn-80   USLHCnet -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:esn-80">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:esnet.ets:chi-80"/>
+	     </owl:NamedIndividual>   
+	     <!-- urn:ogf:network:stp:starlight.ets:esn-81   USLHCnet -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:esn-81">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:esnet.ets:chi-81"/>
+	     </owl:NamedIndividual>   
+	     <!-- urn:ogf:network:stp:starlight.ets:esn-82   USLHCnet -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:esn-82">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:esnet.ets:chi-82"/>
+	     </owl:NamedIndividual>   
+	     <!-- urn:ogf:network:stp:starlight.ets:esn-83   USLHCnet -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:esn-83">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:esnet.ets:chi-83"/>
+	     </owl:NamedIndividual>
+    
+	     <!-- urn:ogf:network:stp:starlight.ets:tok-80  -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:tok-80">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:jgnx.ets:chi-80"/>
+	     </owl:NamedIndividual> 
+	     <!-- urn:ogf:network:stp:starlight.ets:tok-81  -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:tok-81">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:jgnx.ets:chi-81"/>
+	     </owl:NamedIndividual>
+	     <!-- urn:ogf:network:stp:starlight.ets:tok-82  -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:tok-82">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:jgnx.ets:chi-82"/>
+	     </owl:NamedIndividual>
+	     <!-- urn:ogf:network:stp:starlight.ets:tok-83  -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:tok-83">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:jgnx.ets:chi-83"/>
+	     </owl:NamedIndividual>
+    
+	     <!-- urn:ogf:network:stp:starlight.ets:glo06f4 -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:glo-06f4">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:gloriad.ets:sl.0"/>
+	     </owl:NamedIndividual>
+	     <!-- urn:ogf:network:stp:starlight.ets:glo06f5 -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:glo-06f5">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:gloriad.ets:sl.1"/>
+	     </owl:NamedIndividual>
+	     <!-- urn:ogf:network:stp:starlight.ets:glo06f6 -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:glo-06f6">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:gloriad.ets:sl.2"/>
+	     </owl:NamedIndividual>
+	     <!-- urn:ogf:network:stp:starlight.ets:glo06f7 -->
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:starlight.ets:glo-06f7">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+	         <connectedTo rdf:resource="urn:ogf:network:stp:gloriad.ets:sl.3"/>
+	     </owl:NamedIndividual>
+    
+	     <!-- urn:ogf:network:nsnetwork:starlight.ets -->
+    
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:nsnetwork:starlight.ets">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#NSNetwork"/>
+	         <rdfs:label xml:lang="en">starlight.ets</rdfs:label>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:ps-80"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:ps-81"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:ps-82"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:ps-83"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:ams-80"/> 
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:ams-81"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:ams-82"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:ams-83"/>     
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:esn-80"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:esn-81"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:esn-82"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:esn-83"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:tok-80"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:tok-81"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:tok-82"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:tok-83"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:glo-06f4"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:glo-06f5"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:glo-06f6"/>
+	         <hasSTP rdf:resource="urn:ogf:network:stp:starlight.ets:glo-06f7"/>
+	         <managedBy rdf:resource="urn:ogf:network:nsa:starlight"/>
+	         <locatedAt rdf:resource="urn:ogf:network:nsnetwork:starlight.ets:location"/>
+	     </owl:NamedIndividual>
+    
+	     <!-- urn:ogf:network:nsnetwork:starlight.ets:location Chicago, US -->
+    
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:nsnetwork:starlight.ets:location">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#Location"/>
+	         <lat rdf:datatype="http://www.w3.org/2001/XMLSchema#float">41.947906</lat>
+	         <long rdf:datatype="http://www.w3.org/2001/XMLSchema#float">-87.655791</long>
+	     </owl:NamedIndividual>
+    
+	     <!-- urn:ogf:network:nsa:starlight -->
+    
+	     <owl:NamedIndividual rdf:about="urn:ogf:network:nsa:starlight">
+	         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#NSA"/>
+	         <managing rdf:resource="urn:ogf:network:nsnetwork:starlight.ets" />
+	         <adminContact rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
+	             NSA: OpenNSA (NORDUnet) over Argia 
+	             Project manager: Scott Campbell 
+	             email: scott.campbell@crc.gc.ca  
+	             mobile:   
+	             skype: scottcampbell00 
+	             Key software engineer: Henrik Thostrup-Jensen 
+	             email: htj@nordu.net 
+	             skype: henrik.thostrup.jensen
+	         </adminContact>
+	         <csProviderEndpoint rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
+	             http://nsa.badlab.crc.ca:9080/NSI/services/ConnectionService
+	         </csProviderEndpoint>
+	     </owl:NamedIndividual>
+	 
+	 </rdf:RDF>
+

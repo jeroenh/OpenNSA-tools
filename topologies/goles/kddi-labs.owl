@@ -1,0 +1,225 @@
+<rdf:RDF xmlns="http://www.glif.is/working-groups/tech/dtox#"
+     xml:base="http://www.glif.is/working-groups/tech/dtox"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:dtox="http://www.glif.is/working-groups/tech/dtox#">
+
+    <owl:Ontology rdf:about="http://www.glif.is/working-groups/tech/dtox"/>
+
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:AnnotationProperty rdf:about="http://www.w3.org/2000/01/rdf-schema#comment"/>
+    <owl:AnnotationProperty rdf:about="http://www.w3.org/2000/01/rdf-schema#label"/>
+
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    <!-- http://www.w3.org/2002/07/owl#hasPart -->
+
+    <owl:ObjectProperty rdf:about="http://www.w3.org/2002/07/owl#hasPart"/>
+
+    <!-- http://www.w3.org/2002/07/owl#partOf -->
+
+    <owl:ObjectProperty rdf:about="http://www.w3.org/2002/07/owl#partOf"/>
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#connectedTo -->
+
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#connectedTo"/>
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#hasSTP -->
+
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#hasSTP"/>
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#managedBy -->
+
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#managedBy"/>
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#managing -->
+
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#managing"/>
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#mapsTo -->
+
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#mapsTo"/>
+ 
+    <!-- http://www.glif.is/working-groups/tech/dtox#locatedAt -->
+    
+    <owl:ObjectProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#locatedAt"/>
+    
+    
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#adminContact -->
+
+    <owl:DatatypeProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#adminContact"/>
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#csProviderEndpoint -->
+
+    <owl:DatatypeProperty rdf:about="http://www.glif.is/working-groups/tech/dtox#csProviderEndpoint"/>
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#NSA -->
+
+    <owl:Class rdf:about="http://www.glif.is/working-groups/tech/dtox#NSA"/>
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#NSNetwork -->
+
+    <owl:Class rdf:about="http://www.glif.is/working-groups/tech/dtox#NSNetwork"/>
+
+
+
+    <!-- http://www.glif.is/working-groups/tech/dtox#STP -->
+
+    <owl:Class rdf:about="http://www.glif.is/working-groups/tech/dtox#STP"/>
+    
+    <!-- http://www.glif.is/working-groups/tech/dtox#Location -->
+    
+    <owl:Class rdf:about="http://www.glif.is/working-groups/tech/dtox#Location"/>
+    
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+<!-- *** KDDI Labs -->
+
+    <!-- urn:ogf:network:stp:kddi-labs.ets:ps-80 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:kddi-labs.ets:ps-80">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+    </owl:NamedIndividual>
+    <!-- urn:ogf:network:stp:kddi-labs.ets:ps-81 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:kddi-labs.ets:ps-81">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+    </owl:NamedIndividual>
+    <!-- urn:ogf:network:stp:kddi-labs.ets:ps-82 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:kddi-labs.ets:ps-82">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+    </owl:NamedIndividual>
+    <!-- urn:ogf:network:stp:kddi-labs.ets:ps-83 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:kddi-labs.ets:ps-83">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+    </owl:NamedIndividual>
+    
+    <!-- urn:ogf:network:stp:kddi-labs.ets:tok-80 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:kddi-labs.ets:tok-80">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+        <connectedTo rdf:resource="urn:ogf:network:stp:jgnx.ets:fuj-80"/>
+    </owl:NamedIndividual>
+    <!-- urn:ogf:network:stp:kddi-labs.ets:tok-81 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:kddi-labs.ets:tok-81">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+        <connectedTo rdf:resource="urn:ogf:network:stp:jgnx.ets:fuj-81"/>
+    </owl:NamedIndividual>
+    <!-- urn:ogf:network:stp:kddi-labs.ets:tok-82 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:kddi-labs.ets:tok-82">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+        <connectedTo rdf:resource="urn:ogf:network:stp:jgnx.ets:fuj-82"/>
+    </owl:NamedIndividual>
+    <!-- urn:ogf:network:stp:kddi-labs.ets:tok-83 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:kddi-labs.ets:tok-83">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+        <connectedTo rdf:resource="urn:ogf:network:stp:jgnx.ets:fuj-83"/>
+    </owl:NamedIndividual>
+    
+    <!-- urn:ogf:network:nsnetwork:kddi-labs.ets -->
+
+    <owl:NamedIndividual rdf:about="urn:ogf:network:nsnetwork:kddi-labs.ets">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#NSNetwork"/>
+        <rdfs:label xml:lang="en">kddi-labs.ets</rdfs:label>
+        <hasSTP rdf:resource="urn:ogf:network:stp:kddi-labs.ets:ps-80"/>
+        <hasSTP rdf:resource="urn:ogf:network:stp:kddi-labs.ets:ps-81"/>
+        <hasSTP rdf:resource="urn:ogf:network:stp:kddi-labs.ets:ps-82"/>
+        <hasSTP rdf:resource="urn:ogf:network:stp:kddi-labs.ets:ps-83"/>
+        <hasSTP rdf:resource="urn:ogf:network:stp:kddi-labs.ets:tok-80"/>
+        <hasSTP rdf:resource="urn:ogf:network:stp:kddi-labs.ets:tok-81"/>
+        <hasSTP rdf:resource="urn:ogf:network:stp:kddi-labs.ets:tok-82"/>
+        <hasSTP rdf:resource="urn:ogf:network:stp:kddi-labs.ets:tok-83"/>
+        <managedBy rdf:resource="urn:ogf:network:nsa:kddi-labs"/>
+        <locatedAt rdf:resource="urn:ogf:network:nsnetwork:kddi-labs.ets:location"/>
+    </owl:NamedIndividual>
+
+    <!-- urn:ogf:network:nsnetwork:kddi-labs.ets:location  Fujimino, JP -->
+    
+    <owl:NamedIndividual rdf:about="urn:ogf:network:nsnetwork:kddi-labs.ets:location">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#Location"/>
+        <lat rdf:datatype="http://www.w3.org/2001/XMLSchema#float">35.879</lat>
+        <long rdf:datatype="http://www.w3.org/2001/XMLSchema#float">139.517</long>
+    </owl:NamedIndividual>
+    
+    <!-- urn:ogf:network:nsa:kddi-labs -->
+
+    <owl:NamedIndividual rdf:about="urn:ogf:network:nsa:kddi-labs">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#NSA"/>
+        <managing rdf:resource="urn:ogf:network:nsnetwork:kddi-labs.ets" />
+        <csProviderEndpoint rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
+            http://210.196.65.114:9352/connectionprovider
+        </csProviderEndpoint>
+        <adminContact rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
+            NSA: G-Lambda/KDDILabs (KDDI Labs) 
+            Project manager: Takahiro Miyamoto  
+            email: tk-miyamoto@kddilabs.jp 
+            mobile:  81-90-1966-5153  
+            skype: takahiro.miyamoto  
+            Key software engineer: Takahiro Miyamoto  
+            email: tk-miyamoto@kddilabs.jp 
+            mobile:  81-90-1966-5153  
+            skype: takahiro.miyamoto 
+        </adminContact>
+    </owl:NamedIndividual>
+</rdf:RDF>
