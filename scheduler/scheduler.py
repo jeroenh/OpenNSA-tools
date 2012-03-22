@@ -86,12 +86,13 @@ class Scheduler(object):
         bwp = opennsa.nsa.BandwidthParameters(200)
         service_params  = opennsa.nsa.ServiceParameters(start_time, end_time, srcSTP, dstSTP, bandwidth=bwp)
         # Send the reservation and wait for response
-        print "Reserving (%s,%s) to (%s,%s) at %s (%s)" % (srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip())
+        self.reservationDescr = "Reservation (%s,%s) to (%s,%s) at %s (%s)" % (srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip())
+        print self.reservationDescr
         try:
             r = yield self.client.reserve(self.client_nsa, provider_nsa, None, global_reservation_id, description, connection_id, service_params)
         except opennsa.error.ReserveError, e:
             print "ReserveError: %s" % e 
-            self.logger.info("Reserving (%s,%s) to (%s,%s) at %s (%s)" % (srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip()))
+            self.logger.info("Reserving %s" % self.reservationDescr
             self.logger.info("ReserveError: %s" % e)
             return
         if r:
@@ -113,11 +114,11 @@ class Scheduler(object):
                 qr = yield self.client.provision(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
             except opennsa.error.ProvisionError, e:
                 print "ProvisionError: %s" % e 
-                self.logger.info("Provisioning (%s,%s) to (%s,%s) at %s (%s)" % (srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip()))
+                self.logger.info("Provisioning %s" % self.reservationDescr
                 self.logger.info("ProvisionError: %s" % e)
             except opennsa.error.CallbackTimeoutError, e:
                 print "ProvisionTimeoutError: %s" % e 
-                self.logger.info("Provisioning (%s,%s) to (%s,%s) at %s (%s)" % (srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip()))
+                self.logger.info("Provisioning %s" % self.reservationDescr
                 self.logger.info("CallbackTimeoutError: %s" % e)                
             else:
                 reactor.callLater(100, self.doTerminate, provider_nsa, connection_id)
