@@ -92,7 +92,7 @@ class Scheduler(object):
             r = yield self.client.reserve(self.client_nsa, provider_nsa, None, global_reservation_id, description, connection_id, service_params)
         except opennsa.error.ReserveError, e:
             print "ReserveError: %s" % e 
-            self.logger.info("Reserving %s" % self.reservationDescr
+            self.logger.info("Reserving %s" % self.reservationDescr)
             self.logger.info("ReserveError: %s" % e)
             return
         if r:
@@ -114,11 +114,11 @@ class Scheduler(object):
                 qr = yield self.client.provision(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
             except opennsa.error.ProvisionError, e:
                 print "ProvisionError: %s" % e 
-                self.logger.info("Provisioning %s" % self.reservationDescr
+                self.logger.info("Provisioning %s" % self.reservationDescr)
                 self.logger.info("ProvisionError: %s" % e)
             except opennsa.error.CallbackTimeoutError, e:
                 print "ProvisionTimeoutError: %s" % e 
-                self.logger.info("Provisioning %s" % self.reservationDescr
+                self.logger.info("Provisioning %s" % self.reservationDescr)
                 self.logger.info("CallbackTimeoutError: %s" % e)                
             else:
                 reactor.callLater(100, self.doTerminate, provider_nsa, connection_id)
@@ -129,7 +129,12 @@ class Scheduler(object):
     def doTerminate(self, provider_nsa, connection_id):
         if connection_id:
             print "Terminating %s at %s" % (connection_id, provider_nsa)
-            qr = yield self.client.terminate(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
+            try:
+                qr = yield self.client.terminate(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
+            except opennsa.error.TerminateError, e:
+                print "TerminationError: %s" % e 
+                self.logger.info("Terminating %s" % self.reservationDescr)
+                self.logger.info("TerminateError: %s" % e)
         else:
             print "Reservation failed, skipping termination."
 
