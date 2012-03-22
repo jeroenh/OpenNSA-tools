@@ -115,6 +115,10 @@ class Scheduler(object):
                 print "ProvisionError: %s" % e 
                 self.logger.info("Provisioning (%s,%s) to (%s,%s) at %s (%s)" % (srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip()))
                 self.logger.info("ProvisionError: %s" % e)
+            except opennsa.error.CallbackTimeoutError, e:
+                print "ProvisionTimeoutError: %s" % e 
+                self.logger.info("Provisioning (%s,%s) to (%s,%s) at %s (%s)" % (srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip()))
+                self.logger.info("CallbackTimeoutError: %s" % e)                
             else:
                 reactor.callLater(100, self.doTerminate, provider_nsa, connection_id)
         else:
