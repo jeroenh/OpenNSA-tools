@@ -38,7 +38,7 @@ PORT = 6080
 
 def handleAttributeError(failure):
     e = failure.trap(exceptions.AttributeError)
-    print e.message
+    # print e.message
 
 class Scheduler(object):
     def __init__(self,schedule,port):
@@ -86,12 +86,13 @@ class Scheduler(object):
         bwp = opennsa.nsa.BandwidthParameters(200)
         service_params  = opennsa.nsa.ServiceParameters(start_time, end_time, srcSTP, dstSTP, bandwidth=bwp)
         # Send the reservation and wait for response
-        print "Reserving (%s,%s) to (%s,%s) at %s (%s)" % (srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip())
+        self.reservationDescr = "Reservation %s: (%s,%s) to (%s,%s) at %s (%s)" % (global_reservation_id, srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip())
+        print self.reservationDescr
         try:
             r = yield self.client.reserve(self.client_nsa, provider_nsa, None, global_reservation_id, description, connection_id, service_params)
         except opennsa.error.ReserveError, e:
-            print "Failure: %s" % e 
-            self.logger.info("Reserving %s: (%s,%s) to (%s,%s) at %s (%s)" % (global_reservation_id, srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip()))
+            print "ReserveError: %s" % e 
+            self.logger.info("Reserving %s" % self.reservationDescr)
             self.logger.info("ReserveError: %s" % e)
             return
         if r:
@@ -109,8 +110,18 @@ class Scheduler(object):
     def doProvision(self,provider_nsa,connection_id):
         if connection_id:
             print "Provisioning %s at %s" % (connection_id, provider_nsa)
-            qr = yield self.client.provision(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
-            reactor.callLater(100, self.doTerminate, provider_nsa, connection_id)
+            try:
+                qr = yield self.client.provision(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
+            except opennsa.error.ProvisionError, e:
+                print "ProvisionError: %s" % e 
+                self.logger.info("Provisioning %s" % self.reservationDescr)
+                self.logger.info("ProvisionError: %s" % e)
+            except opennsa.error.CallbackTimeoutError, e:
+                print "ProvisionTimeoutError: %s" % e 
+                self.logger.info("Provisioning %s" % self.reservationDescr)
+                self.logger.info("CallbackTimeoutError: %s" % e)                
+            else:
+                reactor.callLater(100, self.doTerminate, provider_nsa, connection_id)
         else:
             print "Reservation failed, skipping provision."
             
@@ -118,7 +129,12 @@ class Scheduler(object):
     def doTerminate(self, provider_nsa, connection_id):
         if connection_id:
             print "Terminating %s at %s" % (connection_id, provider_nsa)
-            qr = yield self.client.terminate(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
+            try:
+                qr = yield self.client.terminate(self.client_nsa, provider_nsa, None , connection_id =  connection_id )
+            except opennsa.error.TerminateError, e:
+                print "TerminationError: %s" % e 
+                self.logger.info("Terminating %s" % self.reservationDescr)
+                self.logger.info("TerminateError: %s" % e)
         else:
             print "Reservation failed, skipping termination."
 
