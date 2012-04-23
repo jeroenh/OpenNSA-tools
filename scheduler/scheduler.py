@@ -86,7 +86,7 @@ class Scheduler(object):
         bwp = opennsa.nsa.BandwidthParameters(200)
         service_params  = opennsa.nsa.ServiceParameters(start_time, end_time, srcSTP, dstSTP, bandwidth=bwp)
         # Send the reservation and wait for response
-        self.reservationDescr = "Reservation (%s,%s) to (%s,%s) at %s (%s)" % (srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip())
+        self.reservationDescr = "Reservation %s: (%s,%s) to (%s,%s) at %s (%s)" % (global_reservation_id, srcNet.name,srcSTP.endpoint,dstNet.name,dstSTP.endpoint, provider_nsa.identity,provider_nsa.url().strip())
         print self.reservationDescr
         try:
             r = yield self.client.reserve(self.client_nsa, provider_nsa, None, global_reservation_id, description, connection_id, service_params)
