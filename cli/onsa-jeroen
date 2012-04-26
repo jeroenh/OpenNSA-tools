@@ -25,9 +25,6 @@ TOPOLOGY_FILE = defaults.get('topology')
 WSDL_DIR = defaults.get('wsdl')
 PORT = 9081
 
-print TOPOLOGY_FILE
-print WSDL_DIR
-
 def getSTP(topo,stp_id):
     tokens = stp_id.replace(opennsa.nsa.STP_PREFIX, '').split(':', 2)
     return topo.getEndpoint(tokens[0],tokens[1])
@@ -231,7 +228,7 @@ def doMain():
                         action="store",dest="provision",
                         help="provision a reservation at a network, requires network and conn-id")
     parser.add_option("-w","--register",
-                        action="store",dest="register",default=False,type="bool",
+                        action="store_true",dest="register",
                         help="on successful reservation register the reservation on the web monitor")
     (options, args) = parser.parse_args()
 
