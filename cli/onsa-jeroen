@@ -158,7 +158,7 @@ def doReserve(options):
     # Send the reservation and wait for response
     r = yield client.reserve(client_nsa, provider_nsa, None, global_reservation_id, description, connection_id, service_params)
     print "Reservation created.\nReservation ID: %s\nConnection ID: %s" % (global_reservation_id,connection_id)
-    if r:
+    if r and options.register:
         urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/register",
             urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
         
@@ -230,6 +230,9 @@ def doMain():
     parser.add_option("-p","--provision",
                         action="store",dest="provision",
                         help="provision a reservation at a network, requires network and conn-id")
+    parser.add_option("-w","--register",
+                        action="store",dest="register",default=False,type="bool",
+                        help="on successful reservation register the reservation on the web monitor")
     (options, args) = parser.parse_args()
 
     cmd = None
