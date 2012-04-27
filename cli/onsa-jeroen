@@ -120,10 +120,10 @@ def doReserve(options):
     reservation = options.reserve
     srcNet = reservation[0]
     dstNet = reservation[2]
-    if not srcNet.endswith(".ets"):
-        srcNet += ".ets"
-    if not dstNet.endswith(".ets"):
-        dstNet += ".ets"
+    # if not srcNet.endswith(".ets"):
+    #     srcNet += ".ets"
+    # if not dstNet.endswith(".ets"):
+    #     dstNet += ".ets"
     srcNet = topo.getNetwork(srcNet)
     srcSTP = srcNet.getEndpoint(reservation[1])
     dstNet = topo.getNetwork(dstNet)
