@@ -22,13 +22,17 @@ defaults_file = os.path.join( os.path.expanduser('~'), '.opennsa-cli' )
 if os.path.exists(defaults_file):
     defaults = opennsa.cli.options.readDefaults( open(defaults_file) )
 TOPOLOGY_FILE = defaults.get('topology')
-WSDL_DIR = defaults.get('wsdl')
-PORT = 9081
+WSDL_DIR = defaults.get('wsdl') or "/usr/local/share/nsi/wsdl"
+
+try:
+    PORT = int(defaults.get('port'))
+except:
+    PORT = 9081
 
 def getSTP(topo,stp_id):
     tokens = stp_id.replace(opennsa.nsa.STP_PREFIX, '').split(':', 2)
     return topo.getEndpoint(tokens[0],tokens[1])
-    
+
 def doInfo(info_id):
     topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])
     if ":stp:" in info_id:
@@ -45,7 +49,7 @@ def doInfo(info_id):
         for ep in net.getEndpoints():
             print "nsa.STP('%s','%s')" % (net.name,ep)
         print 80*"-"
-        
+
 
 def getNSA(name):
     topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])
@@ -53,11 +57,11 @@ def getNSA(name):
         if net.name == name:
             return net.nsa
         elif net.nsa.identity == name:
-            return net.nsa 
+            return net.nsa
         else:
             pass
     raise Exception("Could not find %s in the topology." % name)
-    
+
 @defer.inlineCallbacks
 def doTerminate(terminateArgs):
     network = terminateArgs[0]
@@ -112,7 +116,7 @@ def doQuery(queryArgs):
             print "Typeinfo: %s" % (type(res.serviceParameters.schedule.startTime))
     else:
         print qr
-        
+
 
 @defer.inlineCallbacks
 def doReserve(options):
@@ -120,10 +124,10 @@ def doReserve(options):
     reservation = options.reserve
     srcNet = reservation[0]
     dstNet = reservation[2]
-    if not srcNet.endswith(".ets"):
-        srcNet += ".ets"
-    if not dstNet.endswith(".ets"):
-        dstNet += ".ets"
+    # if not srcNet.endswith(".ets"):
+    #     srcNet += ".ets"
+    # if not dstNet.endswith(".ets"):
+    #     dstNet += ".ets"
     srcNet = topo.getNetwork(srcNet)
     srcSTP = srcNet.getEndpoint(reservation[1])
     dstNet = topo.getNetwork(dstNet)
@@ -158,7 +162,7 @@ def doReserve(options):
     if r and options.register:
         urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/register",
             urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
-        
+
 
 @defer.inlineCallbacks
 def doTerminate(options):
@@ -168,7 +172,7 @@ def doTerminate(options):
     client,client_nsa = createClient()
     print "Terminating %s at %s" % (options.cid, nsa)
     qr = yield client.terminate(client_nsa, nsa, None , connection_id =  options.cid )
-    
+
 @defer.inlineCallbacks
 def doProvision(options):
     nsa = options.provision
@@ -255,8 +259,6 @@ def doMain():
     if cmd:
         d = defer.maybeDeferred(cmd,opts)
         runDefer(d)
-    
-
 
 if __name__ == '__main__':
     doMain()
