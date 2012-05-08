@@ -55,7 +55,10 @@ class Tester(object):
         self.reservation = reservation
         self.nsa = reservation[-1]
         self.port = port
-        self.createClient()
+        if reservation[2] == "northernlight.ets":
+            self.createSSLClient()
+        else:
+            self.createClient()
         self.setupLogging()
         self.startTime = datetime.datetime.now()
 
@@ -124,6 +127,20 @@ class Tester(object):
         reactor.listenTCP(self.port, factory)
         # return client,client_nsa
 
+    def createSSLClient(self):
+        # Constructing the client NSA
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("gmail.com",80))
+        host = s.getsockname()[0]
+        s.close()
+        from opennsa import ctxfactory
+        ctx_factory = ctxfactory.ContextFactory("./server.key", "./server.crt", ".", verify=False)
+        self.client, factory = opennsa.setup.createClient(host, self.port, WSDL_DIR,True, ctx_factory)
+        self.client_nsa = opennsa.nsa.NetworkServiceAgent('AutoScheduler', 'http://%s:%s/NSI/services/ConnectionService' % (host,self.port))
+        reactor.listenSSL(self.port, factory, ctx_factory)
+        # return client,client_nsa
+        
+
 def testDefers():
     global NO_DEFERS
     if NO_DEFERS <= 0:
@@ -146,6 +163,7 @@ def runDefer(d):
 def main():
     PORT = 6080
     for res in SCHEDULE:
+        # print res
         s = Tester(res,PORT)
         d = defer.maybeDeferred(s.doReserveTest)
         runDefer(d)
