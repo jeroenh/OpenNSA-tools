@@ -19,15 +19,16 @@ import opennsa.cli.commands
 import opennsa.cli.options
 
 defaults_file = os.path.join( os.path.expanduser('~'), '.opennsa-cli' )
+# Set some defaults
+WSDL_DIR = "/usr/local/share/nsi/wsdl"
+TOPOLOGY_FILE = "AutoGOLE-TOPO.owl"
+PORT = 9081
+# If the file exists, and the values exist, they overwrite the defaults
 if os.path.exists(defaults_file):
     defaults = opennsa.cli.options.readDefaults( open(defaults_file) )
-TOPOLOGY_FILE = defaults.get('topology')
-WSDL_DIR = defaults.get('wsdl') or "/usr/local/share/nsi/wsdl"
-
-try:
-    PORT = int(defaults.get('port'))
-except:
-    PORT = 9081
+    TOPOLOGY_FILE = defaults.get('topology') or TOPOLOGY_FILE
+    WSDL_DIR = defaults.get('wsdl') or WSDL_DIR
+    PORT = int(defaults.get('port')) or PORT
 
 def getSTP(topo,stp_id):
     tokens = stp_id.replace(opennsa.nsa.STP_PREFIX, '').split(':', 2)
