@@ -100,7 +100,10 @@ class Scheduler(object):
             urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/register",
                 urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
             reactor.callLater(60, self.doProvision, provider_nsa, connection_id)
-            unregister_time = (end_time - datetime.datetime.utcnow()).total_seconds()
+            # unregister_time must be expressed in seconds from now, end_time is a date,
+            # so we substract the current time and then convert it to seconds.
+            # Then we add a buffer to make it look nicer.
+            unregister_time = (end_time - datetime.datetime.utcnow()).total_seconds() + 120
             d = task.deferLater(reactor, unregister_time, self.doUnregister, global_reservation_id, provider_nsa.urn())
             d.addErrback(handleAttributeError)
         else:
