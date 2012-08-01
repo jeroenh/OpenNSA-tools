@@ -35,7 +35,7 @@ def getSTP(topo,stp_id):
     return topo.getEndpoint(tokens[0],tokens[1])
 
 def doInfo(info_id):
-    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])
+    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])[0]
     if ":stp:" in info_id:
         stp = getSTP(topo,info_id)
         if stp:
@@ -53,7 +53,7 @@ def doInfo(info_id):
 
 
 def getNSA(name):
-    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])
+    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])[0]
     for net in topo.networks:
         if net.name == name:
             return net.nsa
@@ -72,7 +72,7 @@ def doTerminate(terminateArgs):
     print "Reservation terminated"
 
 def parseStpList(stpList):
-    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])
+    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])[0]
     store = {}
     for stp in stpList:
         store[stp._order] = stp.stpId
@@ -121,7 +121,7 @@ def doQuery(queryArgs):
 
 @defer.inlineCallbacks
 def doReserve(options):
-    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])
+    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])[0]
     reservation = options.reserve
     srcNet = reservation[0]
     dstNet = reservation[2]
