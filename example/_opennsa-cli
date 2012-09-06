@@ -5,7 +5,7 @@ provider=OpenNSA-JHClient
 # Name of the provider you are contacting
 requester=exampledomain
 # Full path to the topology file
-topology=/some/path/test-topology.owl
+topology=/some/path/example-topology.owl
 # Full path to the WSDL files
 wsdl=/usr/local/share/nsi/wsdl
 # Default Bandwidth to request
