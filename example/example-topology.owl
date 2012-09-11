@@ -12,7 +12,7 @@
     <!-- urn:ogf:network:stp:exampledomain:A1 -->
     <owl:NamedIndividual rdf:about="urn:ogf:network:stp:exampledomain:A1">
         <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
-        <connectedTo rdf:resource="urn:ogf:network:stp:OtherStudent:A1"/>
+        <connectedTo rdf:resource="urn:ogf:network:stp:otherdomain:A1"/>
     </owl:NamedIndividual>
 
     <!-- urn:ogf:network:stp:exampledomain:A1 -->
