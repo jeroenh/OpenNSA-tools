@@ -1,5 +1,5 @@
 # Default OpenNSA to contact
-service=http://localhost:9080/NSI/services/ConnectionService
+service-url=http://localhost:9081/NSI/services/ConnectionService
 # Name your client uses
 provider=OpenNSA-JHClient
 # Name of the provider you are contacting
