@@ -161,7 +161,7 @@ def runDefer(d):
     d.addCallback(lambda _: removeDefer())
 
 def main():
-    PORT = 6080
+    PORT = 7080
     for res in SCHEDULE:
         # print res
         s = Tester(res,PORT)

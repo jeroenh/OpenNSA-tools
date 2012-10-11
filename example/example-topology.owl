@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.glif.is/working-groups/tech/dtox#"
+     xml:base="http://www.glif.is/working-groups/tech/dtox"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:dtox="http://www.glif.is/working-groups/tech/dtox#">
+
+
+
+    <!-- urn:ogf:network:stp:exampledomain:A1 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:exampledomain:A1">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+        <connectedTo rdf:resource="urn:ogf:network:stp:otherdomain:A1"/>
+    </owl:NamedIndividual>
+
+    <!-- urn:ogf:network:stp:exampledomain:A1 -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:stp:exampledomain:A2">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
+    </owl:NamedIndividual>
+
+    <!-- urn:ogf:network:nsnetwork:exampledomain -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:nsnetwork:exampledomain">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#NSNetwork"/>
+        <rdfs:label xml:lang="en">exampledomain</rdfs:label>
+        <hasSTP rdf:resource="urn:ogf:network:stp:exampledomain:A1"/>
+        <hasSTP rdf:resource="urn:ogf:network:stp:exampledomain:A2"/>
+        <managedBy rdf:resource="urn:ogf:network:nsa:exampledomain"/>
+    </owl:NamedIndividual>
+
+
+    <!-- urn:ogf:network:nsa:exampledomain -->
+    <owl:NamedIndividual rdf:about="urn:ogf:network:nsa:exampledomain">
+        <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#NSA"/>
+        <managing rdf:resource="urn:ogf:network:nsnetwork:exampledomain" />
+        <adminContact rdf:datatype="http://www.w3.org/2001/XMLSchema#string">exampledomain network</adminContact>
+        <csProviderEndpoint rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://localhost:9080/NSI/services/ConnectionService</csProviderEndpoint>
+    </owl:NamedIndividual>
+
+
+</rdf:RDF>

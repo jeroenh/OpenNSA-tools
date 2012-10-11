@@ -19,22 +19,23 @@ import opennsa.cli.commands
 import opennsa.cli.options
 
 defaults_file = os.path.join( os.path.expanduser('~'), '.opennsa-cli' )
+# Set some defaults
+WSDL_DIR = "/usr/local/share/nsi/wsdl"
+TOPOLOGY_FILE = "AutoGOLE-TOPO.owl"
+PORT = 9081
+# If the file exists, and the values exist, they overwrite the defaults
 if os.path.exists(defaults_file):
     defaults = opennsa.cli.options.readDefaults( open(defaults_file) )
-TOPOLOGY_FILE = defaults.get('topology')
-WSDL_DIR = defaults.get('wsdl') or "/usr/local/share/nsi/wsdl"
-
-try:
-    PORT = int(defaults.get('port'))
-except:
-    PORT = 9081
+    TOPOLOGY_FILE = defaults.get('topology') or TOPOLOGY_FILE
+    WSDL_DIR = defaults.get('wsdl') or WSDL_DIR
+    PORT = int(defaults.get('port')) or PORT
 
 def getSTP(topo,stp_id):
     tokens = stp_id.replace(opennsa.nsa.STP_PREFIX, '').split(':', 2)
     return topo.getEndpoint(tokens[0],tokens[1])
 
 def doInfo(info_id):
-    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])
+    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])[0]
     if ":stp:" in info_id:
         stp = getSTP(topo,info_id)
         if stp:
@@ -52,7 +53,7 @@ def doInfo(info_id):
 
 
 def getNSA(name):
-    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])
+    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])[0]
     for net in topo.networks:
         if net.name == name:
             return net.nsa
@@ -71,7 +72,7 @@ def doTerminate(terminateArgs):
     print "Reservation terminated"
 
 def parseStpList(stpList):
-    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])
+    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])[0]
     store = {}
     for stp in stpList:
         store[stp._order] = stp.stpId
@@ -120,7 +121,7 @@ def doQuery(queryArgs):
 
 @defer.inlineCallbacks
 def doReserve(options):
-    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])
+    topo = opennsa.topology.gole.parseTopology([open(TOPOLOGY_FILE)])[0]
     reservation = options.reserve
     srcNet = reservation[0]
     dstNet = reservation[2]
