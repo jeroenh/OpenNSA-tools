@@ -188,7 +188,7 @@ class Topology:
 def parseGOLERDFTopology(topology_source):
     def stripURNPrefix(text):
         URN_PREFIX = 'urn:ogf:network:'
-        assert text.startswith(URN_PREFIX)
+        assert text.startswith(URN_PREFIX),"%s does not start with required prefix" % text
         return text.split(':')[-1]
 
     OWL_NS = rdflib.namespace.Namespace("http://www.w3.org/2002/07/owl#")
@@ -224,7 +224,8 @@ def parseGOLERDFTopology(topology_source):
             # If there is a destination, add that, otherwise the value stays None.
             if dest_stp:
                 dest_network = graph.value(predicate=DTOX_NS['hasSTP'], object=dest_stp)
-                dest_stp = nsa.STP(stripURNPrefix(str(dest_network)), stripURNPrefix(str(dest_stp)))
+                if dest_network:
+                    dest_stp = nsa.STP(stripURNPrefix(str(dest_network)), stripURNPrefix(str(dest_stp)))
             ep = nsa.NetworkEndpoint(network_name, stp_name, None, dest_stp, None, None)
             network.addEndpoint(ep)
             topo.addSTP(str(stp),ep)

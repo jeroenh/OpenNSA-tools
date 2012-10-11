@@ -20,21 +20,21 @@ import opennsa.nsa
 import opennsa.cli.commands
 import opennsa.error
 
+
+                                                          
 SCHEDULE = [
-            (("aist.ets","ps-80"),("aist.ets","tok-80"),"aist.ets"),
-            (("czechlight.ets","ps-80"),("czechlight.ets","ams-80"),"czechlight.ets"),
-            (("esnet.ets","ps-80"),("esnet.ets","chi-80"),"esnet.ets"),
-            (("geant.ets","ps-80"),("geant.ets","poz-80"),"geant.ets"),
-            (("gloriad.ets","ps-80-chi"),("gloriad.ets","sl.0"),"gloriad.ets"),
-            (("jgnx.ets","ps-80"),("jgnx.ets","chi-80"),"jgnx.ets"),
-            (("kddi-labs.ets","ps-80"),("kddi-labs.ets","tok-80"),"kddi-labs.ets"),
-            (("krlight.ets","ps-80"),("krlight.ets","glo-80"),"krlight.ets"),
-            (("netherlight.ets","ps-80"),("netherlight.ets","cph-80"),"netherlight.ets"),
-            (("northernlight.ets","ps-80"),("northernlight.ets","ams-80"),"northernlight.ets"),
-            (("pionier.ets","ps-80"),("pionier.ets","ams-80"),"pionier.ets"),
-            (("starlight.ets","ps-80"),("starlight.ets","ams-80"),"starlight.ets"),
-            (("uvalight.ets","ps-80"),("uvalight.ets","ams-80"),"uvalight.ets"),
-           ]
+            # (("czechlight.ets","ps-80"),    ("czechlight.ets","ams-80"),    "uvalight.ets"),
+            # (("netherlight.ets","ps-80"),    ("netherlight.ets","cph-80"),    "uvalight.ets"),
+            # (("northernlight.ets","ps-80"),    ("northernlight.ets","ams-80"),    "uvalight.ets"),
+            # (("pionier.ets","ps-80"),        ("pionier.ets","ams-80"),        "uvalight.ets"),
+            # (("uvalight.ets","ps-80"),        ("uvalight.ets","ams-80"),        "uvalight.ets"),
+            # (("northernlight.ets","ps-81"),    ("pionier.ets","ps-81"),    "uvalight.ets"),
+            (("uvalight.ets","ps-80"),        ("czechlight.ets","ps-80"),        "uvalight.ets"),
+            
+           ]                                                                
+                        
+ 
+   
 
 TOPOLOGY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),"../topologies/AutoGOLE-Topo.owl")
 WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
@@ -87,7 +87,7 @@ class Tester(object):
             start_time = datetime.datetime.utcfromtimestamp(time.time() + 60 ) # one minutes from now
         if not end_time:
             end_time   = start_time + datetime.timedelta(minutes=3)
-        global_reservation_id = 'uva-scheduler:gid-%s' % uuid.uuid1()
+        global_reservation_id = 'uva-tester:gid-%s' % uuid.uuid1()
         self.counter += 1
         connection_id = "urn:uuid:%s" % uuid.uuid1()
         bwp = opennsa.nsa.BandwidthParameters(200)
