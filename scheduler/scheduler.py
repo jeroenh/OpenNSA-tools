@@ -36,6 +36,11 @@ TOPOLOGY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),"../topo
 WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
 PORT = 6080
 
+def logSuccess(resDesc):
+    f = open("reservations.log","w+")
+    f.write("%s\n" % resDesc)
+    f.close()
+
 def handleAttributeError(failure):
     e = failure.trap(exceptions.AttributeError)
     # print e.message
@@ -97,6 +102,7 @@ class Scheduler(object):
             return
         if r:
             print "Reservation created.\nReservation ID: %s\nConnection ID: %s" % (global_reservation_id,connection_id)
+            logSuccess(self.reservationDescr)
             urllib.urlopen("http://rembrandt0.uva.netherlight.nl:8080/register",
                 urllib.urlencode({"urn": global_reservation_id,"nsa": provider_nsa.urn()}))
             reactor.callLater(60, self.doProvision, provider_nsa, connection_id)
