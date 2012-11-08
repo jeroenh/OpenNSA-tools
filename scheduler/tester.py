@@ -29,7 +29,7 @@ SCHEDULE = [
             # (("pionier.ets","ps-80"),        ("pionier.ets","ams-80"),        "uvalight.ets"),
             # (("uvalight.ets","ps-80"),        ("uvalight.ets","ams-80"),        "uvalight.ets"),
             # (("northernlight.ets","ps-81"),    ("pionier.ets","ps-81"),    "uvalight.ets"),
-            (("uvalight.ets","ps-80"),        ("czechlight.ets","ps-80"),        "uvalight.ets"),
+            (("aist.ets","ps-81"),        ("uvalight.ets","ps-81"),        "aist.ets"),
             
            ]                                                                
                         

@@ -353,8 +353,11 @@
         </adminContact>
     <managing rdf:resource="urn:ogf:network:nsnetwork:aist.ets"/>
     <csProviderEndpoint rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
-            http://163.220.30.174:8090/nsi_gl_proxy/services/ConnectionServiceProvider
+      http://163.220.30.174:28180/v1v2/services/ConnectionProvider
         </csProviderEndpoint>
+    <!-- <csProviderEndpoint rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
+            http://163.220.30.174:8090/nsi_gl_proxy/services/ConnectionServiceProvider
+        </csProviderEndpoint> -->
   </rdf:Description>
   <rdf:Description rdf:about="urn:ogf:network:stp:pionier.ets:ps-82">
     <rdf:type rdf:resource="http://www.glif.is/working-groups/tech/dtox#STP"/>
