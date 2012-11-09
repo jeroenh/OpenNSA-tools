@@ -32,9 +32,6 @@ SCHEDULE = [
             (("aist.ets","ps-81"),        ("uvalight.ets","ps-81"),        "aist.ets"),
             
            ]                                                                
-                        
- 
-   
 
 TOPOLOGY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),"../topologies/AutoGOLE-Topo.owl")
 WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')

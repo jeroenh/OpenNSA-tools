@@ -21,15 +21,15 @@ import opennsa.cli.commands
 import opennsa.error
 
 SCHEDULE = [
-             (("aist.ets","ps-83"),("starlight.ets","ps-83"),"aist.ets"),
-             (("geant.ets","ps-83"), ("kddi-labs.ets","ps-83"),"aist.ets"),
-            (("starlight.ets","ps-83"),("uvalight.ets","ps-83"),"aist.ets"),
-            (("uvalight.ets","ps-83"),("krlight.ets","ps-83"),"aist.ets"),
-             (("uvalight.ets","ps-83"),("kddi-labs.ets","ps-83"),"aist.ets"),
-            (("uvalight.ets","ps-83"),("northernlight.ets","ps-83"),"aist.ets"),
-             (("aist.ets","ps-83"),("northernlight.ets","ps-83"),"aist.ets"),
-           (("uvalight.ets","ps-83"),("czechlight.ets","ps-83"),"aist.ets"),
-            (("starlight.ets","ps-83"),("geant.ets","ps-83"),"aist.ets"),
+            (("aist.ets","ps-83"),     ("starlight.ets","ps-83"),     "aist.ets"),
+            (("geant.ets","ps-83"),    ("kddi-labs.ets","ps-83"),     "aist.ets"),
+            (("starlight.ets","ps-83"),("uvalight.ets","ps-83"),      "aist.ets"),
+            (("uvalight.ets","ps-83"), ("krlight.ets","ps-83"),       "aist.ets"),
+            (("uvalight.ets","ps-83"), ("kddi-labs.ets","ps-83"),     "aist.ets"),
+            (("uvalight.ets","ps-83"), ("northernlight.ets","ps-83"), "aist.ets"),
+            (("aist.ets","ps-83"),     ("northernlight.ets","ps-83"), "aist.ets"),
+            (("uvalight.ets","ps-83"), ("czechlight.ets","ps-83"),    "aist.ets"),
+            (("starlight.ets","ps-83"),("geant.ets","ps-83"),         "aist.ets"),
            ]
 
 TOPOLOGY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),"../topologies/AutoGOLE-Topo.owl")
@@ -75,7 +75,9 @@ class Scheduler(object):
         srcSTP = srcNet.getEndpoint(reservation[0][1])
         dstNet = self.topo.getNetwork(reservation[1][0])
         dstSTP = dstNet.getEndpoint(reservation[1][1])
-        provider_nsa = self.topo.getNetwork(reservation[2]).nsa
+        # provider_nsa = self.topo.getNetwork(reservation[2]).nsa
+        # SC12 hack to use AIST v1-v2 proxy for everything
+        provider_nsa = opennsa.nsa.NetworkServiceAgent("aist","http://163.220.30.174:28180/v1v2/services/ConnectionProvider")
         # Setting some defaults for now, to fill in later
         start_time=None
         end_time=None
