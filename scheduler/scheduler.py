@@ -21,7 +21,7 @@ import opennsa.cli.commands
 import opennsa.error
 
 SCHEDULE = [
-            (("aist.ets","ps-83"),     ("max.ets","ps-83"),     "aist.ets"),
+            (("aist.ets","ps-83"),     ("geant.ets","ps-83"),     "aist.ets"),
             (("kddi-labs.ets","ps-83"),("uva.ets","ps-83"),     "aist.ets"),
             (("krlight.ets","ps-83"),  ("psnc.ets","ps-83"),      "aist.ets"),
             (("aist.ets","ps-83"),     ("krlight.ets","ps-83"),       "aist.ets"),
@@ -29,7 +29,7 @@ SCHEDULE = [
             (("esnet.ets","ps-83"),    ("northernlight.ets","ps-83"), "aist.ets"),
             (("aist.ets","ps-83"),     ("czechlight.ets","ps-83"), "aist.ets"),
             (("uvalight.ets","ps-83"), ("czechlight.ets","ps-83"),    "aist.ets"),
-            (("max.ets","ps-83"),      ("geant.ets","ps-83"),         "aist.ets"),
+            (("northernlight.ets","ps-83"),      ("geant.ets","ps-83"),         "aist.ets"),
            ]
 
 TOPOLOGY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),"../topologies/AutoGOLE-Topo.owl")
