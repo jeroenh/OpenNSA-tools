@@ -185,7 +185,9 @@ def doMain(client,client_nsa):
             if global_reservation_ids:
                 print "Now querying %s for %s" % (network.name,global_reservation_ids)
                 # print "Would do query on %s with %s now" % (network.name,global_reservation_ids)
-                q =  client.query(client_nsa, provider, None, "Summary", global_reservation_ids=global_reservation_ids, connection_ids = None )
+                # Hack for SC12 v1v2 situation, redirect everything to AIST
+                provider_nsa = opennsa.nsa.NetworkServiceAgent("aist","http://163.220.30.174:28180/v1v2/services/ConnectionProvider")
+                q =  client.query(client_nsa, provider_nsa, None, "Summary", global_reservation_ids=global_reservation_ids, connection_ids = None )
                 q.addErrback(queryFailed, network.name)
                 queries.append(q)
         else:
