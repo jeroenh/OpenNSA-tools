@@ -22,13 +22,13 @@ import opennsa.error
 
 SCHEDULE = [
             (("aist.ets","ps-83"),     ("czechlight.ets","ps-83"),     "aist.ets"),
-            (("kddi-labs.ets","ps-83"),("uva.ets","ps-83"),     "aist.ets"),
+            (("kddi-labs.ets","ps-83"),("pionier.ets","ps-83"),     "aist.ets"),
             (("krlight.ets","ps-83"),  ("psnc.ets","ps-83"),      "aist.ets"),
             (("aist.ets","ps-83"),     ("krlight.ets","ps-83"),       "aist.ets"),
             (("uvalight.ets","ps-83"), ("krlight.ets","ps-83"),     "aist.ets"),
             (("esnet.ets","ps-83"),    ("uvalight.ets","ps-83"), "aist.ets"),
             (("aist.ets","ps-83"),     ("czechlight.ets","ps-83"), "aist.ets"),
-            (("uvalight.ets","ps-83"), ("czechlight.ets","ps-83"),    "aist.ets"),
+            (("uvalight.ets","ps-83"), ("psnc.ets","ps-83"),    "aist.ets"),
             # (("northernlight.ets","ps-83"),      ("geant.ets","ps-83"),         "aist.ets"),
            ]
 
