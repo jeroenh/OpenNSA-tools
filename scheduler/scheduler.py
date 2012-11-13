@@ -111,7 +111,7 @@ class Scheduler(object):
             # unregister_time must be expressed in seconds from now, end_time is a date,
             # so we substract the current time and then convert it to seconds.
             # Then we add a buffer to make it look nicer.
-            unregister_time = (end_time - datetime.datetime.utcnow()).total_seconds() + 120
+            unregister_time = (end_time - datetime.datetime.utcnow()).total_seconds() + 240
             d = task.deferLater(reactor, unregister_time, self.doUnregister, global_reservation_id, provider_nsa.urn())
             d.addErrback(handleAttributeError)
         else:
