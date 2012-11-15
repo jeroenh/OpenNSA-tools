@@ -37,7 +37,7 @@ WSDL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../wsdl')
 PORT = 6080
 
 def logSuccess(resDesc):
-    f = open("reservations.log","w+")
+    f = open("reservations.log","a+")
     f.write("%s\n" % resDesc)
     f.close()
 
